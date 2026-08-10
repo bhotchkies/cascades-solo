@@ -97,6 +97,10 @@ function updateStrips(profile, features, fixMi, dayStart) {
   const fromMi = fixMi ?? profile.viewStart;
   const emptyLabel = features.length ? '' : 'no data yet';
 
+  renderEntries('next-water', nextNAhead(features, 'water', fromMi, 2), emptyLabel);
+  renderEntries('next-camp', nextNAhead(features, 'camp', fromMi, 2), emptyLabel);
+  renderEntries('next-junction', nextNAhead(features, 'junction', fromMi, 1), emptyLabel);
+
   // Today's progress: only shown once a real day-start exists (a fix taken
   // after actually leaving camp — see days.js/geo.js's REBASE_MI). Hidden
   // rather than showing "0.0 mi" all morning before the first fix, which
@@ -174,7 +178,12 @@ function renderForecastCards(grid, todayKey, dayStart, lastFix, routeMiles) {
     strip.innerHTML = '<div class="fc-card">No forecast data yet</div>';
     return [];
   }
-  const todayStartMi = dayStart?.mi ?? lastFix?.mi ?? null;
+  // No trustworthy fix yet today (still at home, or an off-trail GPS blip
+  // with nothing better to fall back on) — assume the trailhead rather than
+  // showing "no position yet". Only kicks in when there's truly nothing
+  // better: a real dayStart or a last known good fix from earlier today
+  // both still win over this.
+  const todayStartMi = dayStart?.mi ?? lastFix?.mi ?? 0;
 
   const dayData = [0, 1, 2].map((daysAhead) => {
     const dateStr = Days.addDaysStr(todayKey, daysAhead);
