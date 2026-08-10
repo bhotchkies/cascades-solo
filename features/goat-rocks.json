@@ -1,0 +1,666 @@
+[
+ {
+  "kind": "camp",
+  "mi": 0,
+  "name": "Finish Camp",
+  "note": null,
+  "count": 2,
+  "lastReported": "2021-08-19"
+ },
+ {
+  "kind": "camp",
+  "mi": 0.442,
+  "name": "Camp 21 - 1",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-07-23"
+ },
+ {
+  "kind": "water",
+  "mi": 2.014,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2021-07-16"
+ },
+ {
+  "kind": "camp",
+  "mi": 2.064,
+  "name": "tent site & water",
+  "note": "Possibly more. Good for hammocks and small tents.",
+  "count": 2,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "water",
+  "mi": 2.884,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 4.723,
+  "name": "Camp",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 5.159,
+  "name": "tent site",
+  "note": null,
+  "count": 9,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "water",
+  "mi": 7.809,
+  "name": "spring",
+  "note": null,
+  "count": 2,
+  "lastReported": "2021-07-16"
+ },
+ {
+  "kind": "camp",
+  "mi": 7.843,
+  "name": "Hid",
+  "note": "1st Camp",
+  "count": 11,
+  "lastReported": "2026-08-10"
+ },
+ {
+  "kind": "water",
+  "mi": 8.298,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 9.079,
+  "name": "Camp",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "water",
+  "mi": 9.768,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 9.855,
+  "name": "Camp",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "water",
+  "mi": 9.963,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 10.065,
+  "name": "Camp night 1",
+  "note": "somewhere near here",
+  "count": 1,
+  "lastReported": "2026-08-06"
+ },
+ {
+  "kind": "camp",
+  "mi": 10.377,
+  "name": "Camp around here night 4 mile 2282",
+  "note": "We have to check if this is \"snow grass flats\" because we can't camp there. ",
+  "count": 2,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "water",
+  "mi": 11.159,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-08-26"
+ },
+ {
+  "kind": "camp",
+  "mi": 11.178,
+  "name": "Day 1 camp",
+  "note": null,
+  "count": 10,
+  "lastReported": "2023-08-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 11.678,
+  "name": "tent site",
+  "note": null,
+  "count": 1,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 12.695,
+  "name": "Camp Night 2",
+  "note": null,
+  "count": 3,
+  "lastReported": "2023-08-09"
+ },
+ {
+  "kind": "water",
+  "mi": 12.792,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 13.323,
+  "name": "Camp Night 2",
+  "note": "Camp at Lake is due north of waypoint",
+  "count": 3,
+  "lastReported": "2021-07-16"
+ },
+ {
+  "kind": "camp",
+  "mi": 13.829,
+  "name": "Camp 18 - 3 Nice but Junk",
+  "note": null,
+  "count": 2,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 14.053,
+  "name": "campsites",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "water",
+  "mi": 14.401,
+  "name": "Spring",
+  "note": null,
+  "count": 2,
+  "lastReported": "2023-07-11"
+ },
+ {
+  "kind": "camp",
+  "mi": 14.495,
+  "name": "Camp near Elk Pass",
+  "note": null,
+  "count": 6,
+  "lastReported": "2024-08-09"
+ },
+ {
+  "kind": "water",
+  "mi": 14.901,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 15.016,
+  "name": "Camp 16 - 1",
+  "note": null,
+  "count": 6,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "water",
+  "mi": 15.065,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2021-07-16"
+ },
+ {
+  "kind": "camp",
+  "mi": 15.429,
+  "name": "tent site & water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 17.238,
+  "name": "BASE CAMP Pref 1",
+  "note": null,
+  "count": 1,
+  "lastReported": "2023-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 17.639,
+  "name": "campsite?",
+  "note": null,
+  "count": 4,
+  "lastReported": "2026-08-01"
+ },
+ {
+  "kind": "camp",
+  "mi": 18.019,
+  "name": "Campsite W Windbreak",
+  "note": "Several exposed campsites, mi 2276.3, 7015'",
+  "count": 10,
+  "lastReported": "2025-08-13"
+ },
+ {
+  "kind": "water",
+  "mi": 18.346,
+  "name": "Water crossing",
+  "note": null,
+  "count": 4,
+  "lastReported": "2025-08-13"
+ },
+ {
+  "kind": "camp",
+  "mi": 18.391,
+  "name": "tent site",
+  "note": "Small Stream Mile 24.2",
+  "count": 8,
+  "lastReported": "2026-08-01"
+ },
+ {
+  "kind": "water",
+  "mi": 18.594,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2023-08-28"
+ },
+ {
+  "kind": "camp",
+  "mi": 19.28,
+  "name": "Camp-2 tent site w/ H20",
+  "note": "2nd campsite",
+  "count": 70,
+  "lastReported": "2026-08-06"
+ },
+ {
+  "kind": "water",
+  "mi": 19.306,
+  "name": "Tiny water source",
+  "note": null,
+  "count": 1,
+  "lastReported": "2023-08-18"
+ },
+ {
+  "kind": "water",
+  "mi": 19.496,
+  "name": "Spring",
+  "note": "6 miles",
+  "count": 6,
+  "lastReported": "2025-08-17"
+ },
+ {
+  "kind": "camp",
+  "mi": 20.201,
+  "name": "tent site",
+  "note": null,
+  "count": 9,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 20.642,
+  "name": "Camp 13 - 2",
+  "note": "Good campsite with many sites.  Fairly buggy, Good access to water.",
+  "count": 5,
+  "lastReported": "2024-07-12"
+ },
+ {
+  "kind": "water",
+  "mi": 20.939,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2021-07-16"
+ },
+ {
+  "kind": "camp",
+  "mi": 20.941,
+  "name": "tent site",
+  "note": null,
+  "count": 2,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 21.146,
+  "name": "Campsite?",
+  "note": "Room for several tents or other shelters, poor location in rainy weather",
+  "count": 14,
+  "lastReported": "2024-10-20"
+ },
+ {
+  "kind": "water",
+  "mi": 21.527,
+  "name": "couple water sources",
+  "note": null,
+  "count": 1,
+  "lastReported": "2023-07-01"
+ },
+ {
+  "kind": "water",
+  "mi": 21.789,
+  "name": "Water - Cispus River Crossing",
+  "note": null,
+  "count": 6,
+  "lastReported": "2025-08-07"
+ },
+ {
+  "kind": "camp",
+  "mi": 21.858,
+  "name": "Cispus camp",
+  "note": "Camping Third Night",
+  "count": 25,
+  "lastReported": "2025-08-28"
+ },
+ {
+  "kind": "camp",
+  "mi": 22.971,
+  "name": "Camp?",
+  "note": null,
+  "count": 1,
+  "lastReported": "2024-08-14"
+ },
+ {
+  "kind": "camp",
+  "mi": 23.397,
+  "name": "Camp Night 1",
+  "note": "Got here around 5pm. Going to have a nice dinner and listen to “Three Body Problem”",
+  "count": 6,
+  "lastReported": "2026-01-20"
+ },
+ {
+  "kind": "water",
+  "mi": 23.775,
+  "name": "possible water source",
+  "note": null,
+  "count": 1,
+  "lastReported": "2023-07-01"
+ },
+ {
+  "kind": "water",
+  "mi": 24.224,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2023-07-25"
+ },
+ {
+  "kind": "camp",
+  "mi": 24.403,
+  "name": "Camp",
+  "note": null,
+  "count": 1,
+  "lastReported": "2021-05-23"
+ },
+ {
+  "kind": "water",
+  "mi": 24.876,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2023-07-01"
+ },
+ {
+  "kind": "camp",
+  "mi": 24.914,
+  "name": "Camp site",
+  "note": "Camp #2 - Day 3 - Somewhere with dope views, maybe around Sheep Lake?",
+  "count": 32,
+  "lastReported": "2025-09-30"
+ },
+ {
+  "kind": "camp",
+  "mi": 26.121,
+  "name": "Camping spot",
+  "note": null,
+  "count": 7,
+  "lastReported": "2025-09-28"
+ },
+ {
+  "kind": "water",
+  "mi": 26.144,
+  "name": "Tarn - Possible water",
+  "note": null,
+  "count": 3,
+  "lastReported": "2023-07-01"
+ },
+ {
+  "kind": "camp",
+  "mi": 26.921,
+  "name": "Night 2 (Option 1): Camp at Nannie Peak",
+  "note": "Camp site",
+  "count": 6,
+  "lastReported": "2025-09-28"
+ },
+ {
+  "kind": "water",
+  "mi": 28.864,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2020-09-07"
+ },
+ {
+  "kind": "camp",
+  "mi": 29.296,
+  "name": "Camp 1 Option",
+  "note": "Will need to book online",
+  "count": 8,
+  "lastReported": "2026-06-15"
+ },
+ {
+  "kind": "water",
+  "mi": 30.149,
+  "name": "Creek crossing",
+  "note": null,
+  "count": 5,
+  "lastReported": "2026-06-30"
+ },
+ {
+  "kind": "camp",
+  "mi": 31.648,
+  "name": "Camp?",
+  "note": null,
+  "count": 5,
+  "lastReported": "2025-08-29"
+ },
+ {
+  "kind": "camp",
+  "mi": 35.594,
+  "name": "campsites at chambers lk",
+  "note": "dispersed camping with pit toilet",
+  "count": 1,
+  "lastReported": "2020-07-30"
+ },
+ {
+  "kind": "camp",
+  "mi": 35.888,
+  "name": "Chambers Lake Campground",
+  "note": null,
+  "count": 1,
+  "lastReported": "2024-06-17"
+ },
+ {
+  "kind": "camp",
+  "mi": 37.084,
+  "name": "Possible 3rd camp",
+  "note": null,
+  "count": 3,
+  "lastReported": "2025-08-26"
+ },
+ {
+  "kind": "camp",
+  "mi": 37.692,
+  "name": "Campsites",
+  "note": null,
+  "count": 1,
+  "lastReported": "2020-08-03"
+ },
+ {
+  "kind": "water",
+  "mi": 37.868,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2020-08-02"
+ },
+ {
+  "kind": "camp",
+  "mi": 38.074,
+  "name": "Night 2 site",
+  "note": "log benches and fire pit here ",
+  "count": 5,
+  "lastReported": "2026-08-03"
+ },
+ {
+  "kind": "camp",
+  "mi": 38.613,
+  "name": "Camp site with a view",
+  "note": "2 -4 campsites",
+  "count": 16,
+  "lastReported": "2025-06-28"
+ },
+ {
+  "kind": "camp",
+  "mi": 38.959,
+  "name": "shelter",
+  "note": "Single camp on downslope side",
+  "count": 18,
+  "lastReported": "2026-08-04"
+ },
+ {
+  "kind": "water",
+  "mi": 39.005,
+  "name": "Tiny stream of water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2025-08-09"
+ },
+ {
+  "kind": "water",
+  "mi": 39.155,
+  "name": "Spring. Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2023-08-10"
+ },
+ {
+  "kind": "water",
+  "mi": 39.633,
+  "name": "Jordan Creek",
+  "note": "water source",
+  "count": 4,
+  "lastReported": "2024-09-10"
+ },
+ {
+  "kind": "camp",
+  "mi": 39.646,
+  "name": "Above camp 2",
+  "note": "Lots of places to set up tents; on a stream; great views",
+  "count": 23,
+  "lastReported": "2026-08-03"
+ },
+ {
+  "kind": "water",
+  "mi": 40.123,
+  "name": "Very good water source",
+  "note": null,
+  "count": 5,
+  "lastReported": "2023-08-18"
+ },
+ {
+  "kind": "camp",
+  "mi": 40.72,
+  "name": "Campsite!",
+  "note": "Campsites for day 2",
+  "count": 62,
+  "lastReported": "2026-08-10"
+ },
+ {
+  "kind": "water",
+  "mi": 40.86,
+  "name": "Water",
+  "note": "Water",
+  "count": 3,
+  "lastReported": "2023-07-01"
+ },
+ {
+  "kind": "camp",
+  "mi": 41.304,
+  "name": "Camp",
+  "note": "1-2",
+  "count": 2,
+  "lastReported": "2025-07-18"
+ },
+ {
+  "kind": "water",
+  "mi": 41.428,
+  "name": "Tiny source of water",
+  "note": null,
+  "count": 2,
+  "lastReported": "2023-08-18"
+ },
+ {
+  "kind": "camp",
+  "mi": 41.55,
+  "name": "Beautiful large Camp spot",
+  "note": "Good flat area for tent.",
+  "count": 23,
+  "lastReported": "2026-08-01"
+ },
+ {
+  "kind": "water",
+  "mi": 41.565,
+  "name": "Great Water Source",
+  "note": null,
+  "count": 2,
+  "lastReported": "2023-08-18"
+ },
+ {
+  "kind": "camp",
+  "mi": 41.779,
+  "name": "End of day 1",
+  "note": "Campground",
+  "count": 1,
+  "lastReported": "2024-07-28"
+ },
+ {
+  "kind": "camp",
+  "mi": 42.121,
+  "name": "camping spot",
+  "note": null,
+  "count": 2,
+  "lastReported": "2025-09-28"
+ },
+ {
+  "kind": "camp",
+  "mi": 45.89,
+  "name": "Camp Night 5",
+  "note": null,
+  "count": 2,
+  "lastReported": "2022-08-21"
+ }
+]

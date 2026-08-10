@@ -12,6 +12,8 @@ const SHELL = [
   './routes/index.js',
   './routes/goat-rocks.js',
   './routes/snoqualmie.js',
+  './features/goat-rocks.json',
+  './features/snoqualmie.json',
   './map.js',
   './map_style.js',
   './manifest.webmanifest',

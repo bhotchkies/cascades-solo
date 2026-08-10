@@ -122,7 +122,11 @@ async function main() {
   Geo.setRoute({ id: active.meta.id, ...active });
   $('route-name').textContent = `${active.meta.name} · ${active.ROUTE_MILES.toFixed(1)} mi`;
 
-  let features = []; // populated once build_features.js output ships
+  let features = [];
+  try {
+    const res = await fetch(`./features/${active.meta.id}.json`, { cache: 'no-store' });
+    if (res.ok) features = await res.json();
+  } catch { /* offline first load with nothing cached yet — profile still works with no markers */ }
 
   const svg = $('profile-svg');
   const profile = new Profile(svg, {
@@ -134,6 +138,8 @@ async function main() {
       updateStrips(profile, features, lastFixMi);
     },
   });
+
+  profile.setFeatures(features);
 
   $('zoom-in').addEventListener('click', () => profile.zoomBy(1 / 1.6));
   $('zoom-out').addEventListener('click', () => profile.zoomBy(1.6));
