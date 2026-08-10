@@ -8,12 +8,48 @@
   "lastReported": "2021-08-19"
  },
  {
+  "kind": "junction",
+  "mi": 0,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 0,
+  "name": "White Pass Trailhead North",
+  "note": "Trailhead"
+ },
+ {
+  "kind": "bailout",
+  "mi": 0,
+  "name": "US 12",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 0.025,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 0.048,
+  "name": "White Pass Trailhead South",
+  "note": "Trailhead"
+ },
+ {
   "kind": "camp",
   "mi": 0.442,
   "name": "Camp 21 - 1",
   "note": null,
   "count": 1,
   "lastReported": "2019-07-23"
+ },
+ {
+  "kind": "junction",
+  "mi": 1.165,
+  "name": "Pacific Crest Trail",
+  "note": null
  },
  {
   "kind": "water",
@@ -32,12 +68,30 @@
   "lastReported": "2025-07-24"
  },
  {
+  "kind": "junction",
+  "mi": 2.226,
+  "name": "Round Mountain Trail #1140 / Pacific Crest Trail",
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 2.884,
   "name": "Water",
   "note": null,
   "count": 1,
   "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "junction",
+  "mi": 3.264,
+  "name": "Chair Lift Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 4.06,
+  "name": "Pacific Crest Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -56,6 +110,24 @@
   "lastReported": "2025-07-24"
  },
  {
+  "kind": "junction",
+  "mi": 5.915,
+  "name": "Shoe Lake Trail #1119",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 7.107,
+  "name": "Shoe Lake Trail #1119",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 7.716,
+  "name": "Hidden Springs Trail",
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 7.809,
   "name": "spring",
@@ -70,6 +142,12 @@
   "note": "1st Camp",
   "count": 11,
   "lastReported": "2026-08-10"
+ },
+ {
+  "kind": "junction",
+  "mi": 7.913,
+  "name": null,
+  "note": null
  },
  {
   "kind": "water",
@@ -136,6 +214,12 @@
   "lastReported": "2019-08-26"
  },
  {
+  "kind": "junction",
+  "mi": 11.159,
+  "name": "Clear Fork Trail #61 / North Fork Tieton Trail #1118",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 11.178,
   "name": "Day 1 camp",
@@ -152,12 +236,24 @@
   "lastReported": "2025-07-24"
  },
  {
+  "kind": "junction",
+  "mi": 12.378,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 12.695,
   "name": "Camp Night 2",
   "note": null,
   "count": 3,
   "lastReported": "2023-08-09"
+ },
+ {
+  "kind": "junction",
+  "mi": 12.718,
+  "name": "MCall Basin Trail",
+  "note": null
  },
  {
   "kind": "water",
@@ -190,6 +286,12 @@
   "note": null,
   "count": 1,
   "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "junction",
+  "mi": 14.112,
+  "name": null,
+  "note": null
  },
  {
   "kind": "water",
@@ -240,6 +342,12 @@
   "lastReported": "2025-07-24"
  },
  {
+  "kind": "junction",
+  "mi": 15.713,
+  "name": "Coyote Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 17.238,
   "name": "BASE CAMP Pref 1",
@@ -248,12 +356,36 @@
   "lastReported": "2023-09-22"
  },
  {
+  "kind": "junction",
+  "mi": 17.258,
+  "name": "Pacific Crest Trail (Old Snowy Alternate)",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 17.639,
   "name": "campsite?",
   "note": null,
   "count": 4,
   "lastReported": "2026-08-01"
+ },
+ {
+  "kind": "junction",
+  "mi": 17.704,
+  "name": "Pacific Crest Trail (Old Snowy Alternate)",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 17.818,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 18.014,
+  "name": null,
+  "note": null
  },
  {
   "kind": "camp",
@@ -280,12 +412,66 @@
   "lastReported": "2026-08-01"
  },
  {
+  "kind": "junction",
+  "mi": 18.513,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 18.594,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 18.594,
   "name": "Water",
   "note": null,
   "count": 1,
   "lastReported": "2023-08-28"
+ },
+ {
+  "kind": "junction",
+  "mi": 18.656,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 18.722,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 18.806,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 18.858,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 19.008,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 19.07,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 19.253,
+  "name": "Snowgrass Trail #96",
+  "note": null
  },
  {
   "kind": "camp",
@@ -304,12 +490,36 @@
   "lastReported": "2023-08-18"
  },
  {
+  "kind": "junction",
+  "mi": 19.321,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 19.439,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 19.493,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 19.496,
   "name": "Spring",
   "note": "6 miles",
   "count": 6,
   "lastReported": "2025-08-17"
+ },
+ {
+  "kind": "junction",
+  "mi": 19.634,
+  "name": null,
+  "note": null
  },
  {
   "kind": "camp",
@@ -320,12 +530,30 @@
   "lastReported": "2025-07-24"
  },
  {
+  "kind": "junction",
+  "mi": 20.214,
+  "name": "Bypass Trail #97",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 20.506,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 20.642,
   "name": "Camp 13 - 2",
   "note": "Good campsite with many sites.  Fairly buggy, Good access to water.",
   "count": 5,
   "lastReported": "2024-07-12"
+ },
+ {
+  "kind": "junction",
+  "mi": 20.906,
+  "name": null,
+  "note": null
  },
  {
   "kind": "water",
@@ -368,12 +596,24 @@
   "lastReported": "2025-08-07"
  },
  {
+  "kind": "junction",
+  "mi": 21.83,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 21.858,
   "name": "Cispus camp",
   "note": "Camping Third Night",
   "count": 25,
   "lastReported": "2025-08-28"
+ },
+ {
+  "kind": "junction",
+  "mi": 22.285,
+  "name": "Old Cascade Crest Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -384,12 +624,24 @@
   "lastReported": "2024-08-14"
  },
  {
+  "kind": "junction",
+  "mi": 23.333,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 23.397,
   "name": "Camp Night 1",
   "note": "Got here around 5pm. Going to have a nice dinner and listen to “Three Body Problem”",
   "count": 6,
   "lastReported": "2026-01-20"
+ },
+ {
+  "kind": "junction",
+  "mi": 23.638,
+  "name": "Old Cascade Crest Trail",
+  "note": null
  },
  {
   "kind": "water",
@@ -416,6 +668,12 @@
   "lastReported": "2021-05-23"
  },
  {
+  "kind": "junction",
+  "mi": 24.857,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 24.876,
   "name": "Water",
@@ -430,6 +688,18 @@
   "note": "Camp #2 - Day 3 - Somewhere with dope views, maybe around Sheep Lake?",
   "count": 32,
   "lastReported": "2025-09-30"
+ },
+ {
+  "kind": "junction",
+  "mi": 24.947,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 25.547,
+  "name": "Nannie Ridge Trail #98",
+  "note": null
  },
  {
   "kind": "camp",
@@ -448,12 +718,42 @@
   "lastReported": "2023-07-01"
  },
  {
+  "kind": "junction",
+  "mi": 26.16,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 26.868,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 26.921,
   "name": "Night 2 (Option 1): Camp at Nannie Peak",
   "note": "Camp site",
   "count": 6,
   "lastReported": "2025-09-28"
+ },
+ {
+  "kind": "junction",
+  "mi": 27.629,
+  "name": "Nannie Ridge Trail #98",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 28.501,
+  "name": "Nannie Ridge Trail #98",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 28.825,
+  "name": "Nannie Ridge Trail #98",
+  "note": null
  },
  {
   "kind": "water",
@@ -464,12 +764,66 @@
   "lastReported": "2020-09-07"
  },
  {
+  "kind": "junction",
+  "mi": 29.215,
+  "name": "Walupt Lake Trail",
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 29.238,
+  "name": "Walupt Lake Trailhead",
+  "note": "Trailhead"
+ },
+ {
+  "kind": "bailout",
+  "mi": 29.262,
+  "name": "Walupt Lake Road",
+  "note": "Road crossing"
+ },
+ {
   "kind": "camp",
   "mi": 29.296,
   "name": "Camp 1 Option",
   "note": "Will need to book online",
   "count": 8,
   "lastReported": "2026-06-15"
+ },
+ {
+  "kind": "bailout",
+  "mi": 29.353,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 29.405,
+  "name": "Walupt Lake Road",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "junction",
+  "mi": 29.433,
+  "name": "Walupt Horse Trail",
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 29.482,
+  "name": "Walupt Lake Road",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "junction",
+  "mi": 29.606,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 29.892,
+  "name": "Walupt Lake Road",
+  "note": "Road crossing"
  },
  {
   "kind": "water",
@@ -480,12 +834,186 @@
   "lastReported": "2026-06-30"
  },
  {
+  "kind": "junction",
+  "mi": 30.151,
+  "name": "Walupt Horse Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 30.207,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 30.251,
+  "name": "Walupt Lake Horse Camp Road",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "junction",
+  "mi": 30.368,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 30.602,
+  "name": "Coleman Weedpatch Horse Trail #121A",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 30.861,
+  "name": "Coleman Weedpatch Trail #121",
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 30.861,
+  "name": "Coleman Weedpatch Trailhead",
+  "note": "Trailhead"
+ },
+ {
+  "kind": "bailout",
+  "mi": 30.868,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 30.876,
+  "name": "Walupt Lake Road",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "junction",
+  "mi": 31.221,
+  "name": "Klickitat Loop Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 31.643,
+  "name": "Klickitat Loop Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 31.648,
   "name": "Camp?",
   "note": null,
   "count": 5,
   "lastReported": "2025-08-29"
+ },
+ {
+  "kind": "junction",
+  "mi": 31.896,
+  "name": "Klickitat Loop Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 32.803,
+  "name": "End Road / Klickitat Loop Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 33.087,
+  "name": "End Road",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 33.517,
+  "name": "Meadow Road",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 33.651,
+  "name": "Klickitat Loop Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 33.968,
+  "name": "Klickitat Loop Trail/Old Chambers Road",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 34.136,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 34.452,
+  "name": "Klickitat Loop Trail/Bikers' Road",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 34.679,
+  "name": "Bikers' Road",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 34.766,
+  "name": "Klickitat Loop Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 34.877,
+  "name": "Goat Ridge Road",
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 34.984,
+  "name": "Chambers Lake Road",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 35.141,
+  "name": "Chambers Lake Road",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 35.178,
+  "name": "Berry Patch Road",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 35.227,
+  "name": "Hikers Road",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 35.277,
+  "name": "Snowgrass Hikers' Trailhead",
+  "note": "Trailhead"
+ },
+ {
+  "kind": "bailout",
+  "mi": 35.386,
+  "name": "Berry Patch Road",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 35.588,
+  "name": "Berry Patch Road",
+  "note": "Road crossing"
  },
  {
   "kind": "camp",
@@ -496,12 +1024,30 @@
   "lastReported": "2020-07-30"
  },
  {
+  "kind": "bailout",
+  "mi": 35.598,
+  "name": "Berry Patch Trailhead",
+  "note": "Trailhead"
+ },
+ {
+  "kind": "junction",
+  "mi": 35.607,
+  "name": "Snowgrass Trail #96",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 35.888,
   "name": "Chambers Lake Campground",
   "note": null,
   "count": 1,
   "lastReported": "2024-06-17"
+ },
+ {
+  "kind": "junction",
+  "mi": 36.826,
+  "name": "Goat Ridge Lookout Trail #95A",
+  "note": null
  },
  {
   "kind": "camp",
@@ -512,12 +1058,24 @@
   "lastReported": "2025-08-26"
  },
  {
+  "kind": "junction",
+  "mi": 37.489,
+  "name": "Goat Ridge Lookout Trail #95A",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 37.692,
   "name": "Campsites",
   "note": null,
   "count": 1,
   "lastReported": "2020-08-03"
+ },
+ {
+  "kind": "junction",
+  "mi": 37.818,
+  "name": "Jordan Creek Trail #94 / Goat Ridge Trail #95",
+  "note": null
  },
  {
   "kind": "water",
@@ -568,6 +1126,12 @@
   "lastReported": "2023-08-10"
  },
  {
+  "kind": "junction",
+  "mi": 39.59,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 39.633,
   "name": "Jordan Creek",
@@ -584,12 +1148,36 @@
   "lastReported": "2026-08-03"
  },
  {
+  "kind": "junction",
+  "mi": 39.646,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 40.051,
+  "name": "Lily Basin Trail #86",
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 40.123,
   "name": "Very good water source",
   "note": null,
   "count": 5,
   "lastReported": "2023-08-18"
+ },
+ {
+  "kind": "junction",
+  "mi": 40.369,
+  "name": "Lily Basin Trail #86",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 40.677,
+  "name": null,
+  "note": null
  },
  {
   "kind": "camp",
@@ -600,12 +1188,42 @@
   "lastReported": "2026-08-10"
  },
  {
+  "kind": "junction",
+  "mi": 40.738,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 40.8,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 40.858,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 40.86,
   "name": "Water",
   "note": "Water",
   "count": 3,
   "lastReported": "2023-07-01"
+ },
+ {
+  "kind": "junction",
+  "mi": 40.919,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 40.989,
+  "name": "Lily Basin Trail #86",
+  "note": null
  },
  {
   "kind": "camp",
@@ -616,12 +1234,24 @@
   "lastReported": "2025-07-18"
  },
  {
+  "kind": "junction",
+  "mi": 41.393,
+  "name": "Packwood Glacier Trail",
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 41.428,
   "name": "Tiny source of water",
   "note": null,
   "count": 2,
   "lastReported": "2023-08-18"
+ },
+ {
+  "kind": "junction",
+  "mi": 41.499,
+  "name": "Packwood Glacier Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -640,6 +1270,12 @@
   "lastReported": "2023-08-18"
  },
  {
+  "kind": "junction",
+  "mi": 41.726,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 41.779,
   "name": "End of day 1",
@@ -648,12 +1284,24 @@
   "lastReported": "2024-07-28"
  },
  {
+  "kind": "junction",
+  "mi": 41.89,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 42.121,
   "name": "camping spot",
   "note": null,
   "count": 2,
   "lastReported": "2025-09-28"
+ },
+ {
+  "kind": "junction",
+  "mi": 42.258,
+  "name": "Pacific Crest Trail (Old Snowy Alternate)",
+  "note": null
  },
  {
   "kind": "camp",

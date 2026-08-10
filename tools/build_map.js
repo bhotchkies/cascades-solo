@@ -1,162 +1,213 @@
-// Builds the two offline map archives (map/corridor.pmtiles, map/wide.pmtiles)
-// from the public Protomaps daily planet build. Run by hand, output committed
-// — same pattern as tools/build_route.js.
+// Builds map/<route-id>.pmtiles — an offline raster basemap from the USGS
+// National Map Topo service (public domain, contours in feet — the
+// FarOut-style look this app is meant to match; see session notes on why
+// OpenTopoMap was rejected: metric contours and a tile-usage policy that
+// discourages bulk offline caching).
 //
-//   node tools/build_map.js
+//   node tools/build_map.js [route-id]
 //
-// Requires the `pmtiles` CLI (protomaps/go-pmtiles) on PATH, or set PMTILES_BIN
-// to its path. Get it from https://github.com/protomaps/go-pmtiles/releases —
-// there is no npm package, it's a standalone Go binary.
+// Requires the `pmtiles` CLI (protomaps/go-pmtiles) on PATH, or set
+// PMTILES_BIN — same as the WHW app this was forked from. No npm
+// dependency for the MBTiles step: Node's built-in `node:sqlite` writes the
+// intermediate .mbtiles directly, then `pmtiles convert` turns that into
+// the .pmtiles the app actually ships.
 //
-// This does NOT bulk-download from tile.openstreetmap.org (against their
-// usage policy) — it extracts a small region from Protomaps' self-hostable
-// planet build over HTTP range requests, which is exactly what `pmtiles
-// extract` is for. See https://docs.protomaps.com/basemaps/build for the
-// underlying build and https://operations.osmfoundation.org/policies/tiles/
-// for the policy this avoids.
+// Unlike WHW's build_map.js, this can't use `pmtiles extract` — that only
+// works against a pre-built pmtiles archive served over HTTP range
+// requests (Protomaps' hosted planet build), and no such archive exists for
+// USGS raster tiles. This downloads each tile individually instead, which
+// is why MAX_ZOOM matters a lot more here: one more zoom level is 4x the
+// tile count, not a constant-time region extract.
 
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { DatabaseSync } = require('node:sqlite');
 
 const OUT_DIR = path.join(__dirname, '..', 'map');
-const GEOJSON_PATH = path.join(__dirname, 'corridor.geojson');
+const CACHE_DIR = path.join(__dirname, '.tile_cache');
 const PMTILES_BIN = process.env.PMTILES_BIN || 'pmtiles';
 
-const M_PER_MILE = 1609.344;
+const TILE_URL = (z, y, x) => `https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/${z}/${y}/${x}`;
 
-// Wider than the 2 mi corridor we actually want — see buildCorridor() below
-// for why. Chosen by trial: the extract came back at 7.2 MB, comfortably
-// under budget, so there's no pressure to tighten it further.
-const CORRIDOR_BUFFER_MI = 2.5;
-const CORRIDOR_MAXZOOM = 15;
+// z9 for a coarse "at least something's on screen" fallback up through z15
+// for genuine on-trail navigation detail (roughly FarOut's own zoom range).
+// Tile count grows ~4x per level, so this is the number to reconsider first
+// if the built archive comes back oversized — see the printed size report
+// at the end of the run and the plan's open item on measuring before
+// committing to a buffer/zoom.
+const MIN_ZOOM = 9;
+const MAX_ZOOM = 15;
+const CONCURRENCY = 10;
 
-// Rough box covering the whole route plus a wide margin either side —
-// Glasgow/Edinburgh up to Skye/Inverness. This is the fallback layer shown
-// when a GPS fix lands outside the detailed corridor, so it only needs to
-// avoid a blank screen, not carry real detail.
-const WIDE_BBOX = [-6.5, 55.4, -3.0, 57.5]; // [west, south, east, north]
-// z9 was chosen after z11 (15.8 MB) and z10 (7.7 MB) both came back far
-// larger than a coarse backdrop needs — z11 carries full building/road detail
-// across the entire Glasgow conurbation. z9 (3.2 MB) still keeps roads,
-// water and place labels.
-const WIDE_MAXZOOM = 9;
+const ROUTE_CONFIGS = {
+  'goat-rocks': { bbox: [-121.55782, 46.39272, -121.34242, 46.67370] },
+  'snoqualmie': { bbox: [-121.47854, 47.40104, -121.17423, 47.57628] },
+};
 
-const BUILDS_INDEX = 'https://build-metadata.protomaps.dev/builds.json';
-const BUILD_HOST = 'https://build.protomaps.com/';
+// ------------------------------------------------------------- tile math
 
-// ------------------------------------------------------------------ corridor
+// Standard Web Mercator slippy-map tile indices — ArcGIS's REST tile
+// service addresses tiles as /{level}/{row}/{col}, which is the same
+// z/y/x scheme OSM/Google use, just with the path segments in a different
+// order. Verified against a live tile fetch during development.
+function lonLatToTile(lon, lat, z) {
+  const n = 2 ** z;
+  const x = Math.floor(((lon + 180) / 360) * n);
+  const latRad = (lat * Math.PI) / 180;
+  const y = Math.floor(
+    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n
+  );
+  return { x, y };
+}
 
-// A coarse buffer polygon around the trail, for pmtiles extract --region.
-// Deliberately NOT a per-vertex buffer of all 1,166 route.js points — offsetting
-// every point perpendicular to its local bearing self-intersects into bowties
-// at sharp turns (the Conic Hill switchbacks, the Devil's Staircase). Instead:
-// decimate to a coarse hull first, then buffer *wider* than the target to
-// absorb the corner-cutting the decimation itself introduces. This only has
-// to be good enough to select the right tiles, not a precise boundary.
-//
-// The ribbon itself has flat cutoffs at both ends — offsetting perpendicular
-// to the trail direction gives no coverage for anything "behind" the first
-// point or "past" the last one, however close it is in a straight line. A
-// hotel 0.5 mi south of Milngavie's trail-start point fell outside the ribbon
-// entirely and rendered on the coarse backdrop only, caught by testing (not
-// visible from the code, since the ribbon still *looks* like it should cover
-// a 2.5 mi radius). Fixed by adding a full circle of the same radius around
-// each endpoint as a separate polygon in a MultiPolygon — simpler and more
-// robust than computing the exact tangent points to splice a matching
-// semicircular cap into the ribbon's own ring, and pmtiles extract --region
-// only needs the geometry to select the right tiles, not to be a single
-// simple polygon.
-function circleRing(center, radiusMi, steps = 24) {
-  const milesToDegLat = (mi) => mi / 69.0;
-  const milesToDegLon = (mi, lat) => mi / (69.0 * Math.cos(lat * Math.PI / 180));
-  const ring = [];
-  for (let i = 0; i <= steps; i++) {
-    const theta = (i / steps) * 2 * Math.PI;
-    const dLat = milesToDegLat(radiusMi) * Math.cos(theta);
-    const dLon = milesToDegLon(radiusMi, center[0]) * Math.sin(theta);
-    ring.push([center[1] + dLon, center[0] + dLat]); // [lon, lat] for GeoJSON
+function tileRangeForBbox(bbox, z) {
+  const [w, s, e, n] = bbox;
+  // Note: y increases southward, so the north edge gives the smaller y.
+  const nw = lonLatToTile(w, n, z);
+  const se = lonLatToTile(e, s, z);
+  return { xMin: nw.x, xMax: se.x, yMin: nw.y, yMax: se.y };
+}
+
+// ------------------------------------------------------------- fetching
+
+async function withPool(items, limit, worker) {
+  let next = 0;
+  async function runOne() {
+    while (next < items.length) {
+      const i = next++;
+      await worker(items[i], i);
+    }
   }
-  return ring;
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, runOne));
 }
 
-function buildCorridor(route, strideStride) {
-  const pts = [];
-  for (let i = 0; i < route.length; i += strideStride) pts.push([route[i], route[i + 1]]);
+async function fetchTile(z, x, y) {
+  const res = await fetch(TILE_URL(z, y, x));
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return Buffer.from(await res.arrayBuffer());
+}
 
-  const DECIMATE = 12;
-  const coarse = pts.filter((_, i) => i % DECIMATE === 0 || i === pts.length - 1);
+// Downloads every tile for the given z/x/y list, caching each to disk by
+// path so a killed or re-run build doesn't refetch what it already has —
+// same checkpoint pattern as tools/build_route.js's 3DEP cache.
+async function fetchAllTiles(routeId, tiles) {
+  const cacheDir = path.join(CACHE_DIR, routeId);
+  fs.mkdirSync(cacheDir, { recursive: true });
 
-  const milesToDegLat = (mi) => mi / 69.0;
-  const milesToDegLon = (mi, lat) => mi / (69.0 * Math.cos(lat * Math.PI / 180));
-  const bearing = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]); // planar approx, fine at this scale
+  let done = 0;
+  let failed = 0;
+  await withPool(tiles, CONCURRENCY, async (t) => {
+    const cachePath = path.join(cacheDir, `${t.z}_${t.x}_${t.y}.jpg`);
+    if (!fs.existsSync(cachePath)) {
+      try {
+        const buf = await fetchTile(t.z, t.x, t.y);
+        fs.writeFileSync(cachePath, buf);
+      } catch (e) {
+        failed++;
+      }
+    }
+    done++;
+    if (done % 50 === 0 || done === tiles.length) {
+      process.stdout.write(`\r  ${done}/${tiles.length} tiles (${failed} failed)`);
+    }
+  });
+  console.log('');
+  return { cacheDir, failed };
+}
 
-  const left = [];
-  const right = [];
-  for (let i = 0; i < coarse.length; i++) {
-    const prev = coarse[Math.max(0, i - 1)];
-    const next = coarse[Math.min(coarse.length - 1, i + 1)];
-    const perp = bearing(prev, next) + Math.PI / 2;
-    const dLat = milesToDegLat(CORRIDOR_BUFFER_MI) * Math.cos(perp);
-    const dLon = milesToDegLon(CORRIDOR_BUFFER_MI, coarse[i][0]) * Math.sin(perp);
-    left.push([coarse[i][1] + dLon, coarse[i][0] + dLat]); // [lon, lat] for GeoJSON
-    right.push([coarse[i][1] - dLon, coarse[i][0] - dLat]);
+// ------------------------------------------------------------ mbtiles
+
+// Writes the MBTiles sqlite schema (https://github.com/mapbox/mbtiles-spec)
+// from the cached tile files. tile_row is stored TMS-flipped (y counted
+// from the south), which is the spec's convention and what `pmtiles
+// convert` expects — NOT the XYZ y used to fetch the tiles from ArcGIS.
+function buildMbtiles(routeId, cacheDir, tiles, bbox) {
+  const outPath = path.join(OUT_DIR, `${routeId}.mbtiles`);
+  if (fs.existsSync(outPath)) fs.unlinkSync(outPath);
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+
+  const db = new DatabaseSync(outPath);
+  db.exec(`
+    CREATE TABLE metadata (name TEXT, value TEXT);
+    CREATE TABLE tiles (zoom_level INTEGER, tile_column INTEGER, tile_row INTEGER, tile_data BLOB);
+    CREATE UNIQUE INDEX tile_index ON tiles (zoom_level, tile_column, tile_row);
+  `);
+
+  const insertMeta = db.prepare('INSERT INTO metadata (name, value) VALUES (?, ?)');
+  insertMeta.run('name', `Cascades Solo — ${routeId}`);
+  insertMeta.run('format', 'jpg');
+  insertMeta.run('type', 'baselayer');
+  insertMeta.run('minzoom', String(MIN_ZOOM));
+  insertMeta.run('maxzoom', String(MAX_ZOOM));
+  insertMeta.run('bounds', bbox.join(','));
+  insertMeta.run('attribution', 'USGS National Map');
+
+  const insertTile = db.prepare(
+    'INSERT INTO tiles (zoom_level, tile_column, tile_row, tile_data) VALUES (?, ?, ?, ?)'
+  );
+
+  let written = 0;
+  for (const t of tiles) {
+    const cachePath = path.join(cacheDir, `${t.z}_${t.x}_${t.y}.jpg`);
+    if (!fs.existsSync(cachePath)) continue; // failed fetch — leave a gap rather than fail the build
+    const data = fs.readFileSync(cachePath);
+    const tmsRow = 2 ** t.z - 1 - t.y; // XYZ -> TMS row flip
+    insertTile.run(t.z, t.x, tmsRow, data);
+    written++;
   }
-  const ring = [...left, ...right.reverse(), left[0]];
-
-  const startCap = circleRing(coarse[0], CORRIDOR_BUFFER_MI);
-  const endCap = circleRing(coarse[coarse.length - 1], CORRIDOR_BUFFER_MI);
-
-  return {
-    type: 'FeatureCollection',
-    features: [{
-      type: 'Feature',
-      properties: {},
-      geometry: { type: 'MultiPolygon', coordinates: [[ring], [startCap], [endCap]] },
-    }],
-  };
+  db.close();
+  return { outPath, written };
 }
 
-// -------------------------------------------------------------------- build
-
-async function latestBuildUrl() {
-  const res = await fetch(BUILDS_INDEX);
-  if (!res.ok) throw new Error(`builds index fetch failed: HTTP ${res.status}`);
-  const builds = await res.json();
-  const latest = builds[builds.length - 1]; // index is oldest-first
-  console.log(`Using daily build ${latest.key} (${(latest.size / 1e9).toFixed(1)} GB, uploaded ${latest.uploaded})`);
-  return BUILD_HOST + latest.key;
+function convertToPmtiles(mbtilesPath, routeId) {
+  const outPath = path.join(OUT_DIR, `${routeId}.pmtiles`);
+  console.log(`$ pmtiles convert ${path.relative(process.cwd(), mbtilesPath)} ${path.relative(process.cwd(), outPath)}`);
+  execFileSync(PMTILES_BIN, ['convert', '--force', mbtilesPath, outPath], { stdio: 'inherit' });
+  return outPath;
 }
 
-function runExtract(sourceUrl, outFile, args) {
-  console.log(`\n$ pmtiles extract ${sourceUrl} ${outFile} ${args.join(' ')}`);
-  execFileSync(PMTILES_BIN, ['extract', sourceUrl, outFile, ...args], { stdio: 'inherit' });
+// ------------------------------------------------------------------ main
+
+function tileListFor(bbox) {
+  const tiles = [];
+  for (let z = MIN_ZOOM; z <= MAX_ZOOM; z++) {
+    const { xMin, xMax, yMin, yMax } = tileRangeForBbox(bbox, z);
+    for (let x = xMin; x <= xMax; x++) {
+      for (let y = yMin; y <= yMax; y++) tiles.push({ z, x, y });
+    }
+  }
+  return tiles;
+}
+
+async function buildOne(routeId) {
+  const cfg = ROUTE_CONFIGS[routeId];
+  console.log(`\n== ${routeId} ==`);
+  const tiles = tileListFor(cfg.bbox);
+  console.log(`${tiles.length} tiles across z${MIN_ZOOM}-${MAX_ZOOM}`);
+
+  const { cacheDir, failed } = await fetchAllTiles(routeId, tiles);
+  if (failed) console.log(`  ${failed} tile(s) failed to fetch — those areas will be blank in the built archive`);
+
+  const { outPath: mbtilesPath, written } = buildMbtiles(routeId, cacheDir, tiles, cfg.bbox);
+  console.log(`wrote ${path.relative(process.cwd(), mbtilesPath)} (${written} tiles)`);
+
+  const pmtilesPath = convertToPmtiles(mbtilesPath, routeId);
+  fs.unlinkSync(mbtilesPath); // intermediate only — the app ships the .pmtiles
+
+  const sizeMB = fs.statSync(pmtilesPath).size / 1e6;
+  console.log(`${routeId}.pmtiles: ${sizeMB.toFixed(1)} MB`);
+  return sizeMB;
 }
 
 async function main() {
-  fs.mkdirSync(OUT_DIR, { recursive: true });
+  const wantId = process.argv[2];
+  const ids = wantId ? [wantId] : Object.keys(ROUTE_CONFIGS);
+  if (wantId && !ROUTE_CONFIGS[wantId]) throw new Error(`no route config for "${wantId}"`);
 
-  const { ROUTE, ROUTE_STRIDE } = await import('../route.js');
-  const corridorGeoJSON = buildCorridor(ROUTE, ROUTE_STRIDE);
-  fs.writeFileSync(GEOJSON_PATH, JSON.stringify(corridorGeoJSON));
-  const polyCount = corridorGeoJSON.features[0].geometry.coordinates.length;
-  console.log(`Wrote ${path.relative(process.cwd(), GEOJSON_PATH)}`
-    + ` (${polyCount} polygons: 1 ribbon + 2 end caps)`);
-
-  const sourceUrl = await latestBuildUrl();
-
-  const corridorOut = path.join(OUT_DIR, 'corridor.pmtiles');
-  runExtract(sourceUrl, corridorOut, [`--region=${GEOJSON_PATH}`, `--maxzoom=${CORRIDOR_MAXZOOM}`]);
-
-  const wideOut = path.join(OUT_DIR, 'wide.pmtiles');
-  runExtract(sourceUrl, wideOut, [`--bbox=${WIDE_BBOX.join(',')}`, `--maxzoom=${WIDE_MAXZOOM}`]);
-
-  const corridorMB = fs.statSync(corridorOut).size / 1e6;
-  const wideMB = fs.statSync(wideOut).size / 1e6;
-  console.log(`\ncorridor.pmtiles  ${corridorMB.toFixed(1)} MB`);
-  console.log(`wide.pmtiles      ${wideMB.toFixed(1)} MB`);
-  console.log(`TOTAL             ${(corridorMB + wideMB).toFixed(1)} MB`);
-  console.log(`\nUpdate the download-size figure quoted in app.js/index.html to match.`);
+  let total = 0;
+  for (const id of ids) total += await buildOne(id);
+  console.log(`\nTOTAL: ${total.toFixed(1)} MB across ${ids.length} route(s)`);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

@@ -214,6 +214,7 @@ async function main() {
   $('sheet-backdrop').addEventListener('click', closeSheet);
 
   let lastFixMi = null;
+  let lastMapFix = null; // { lat, lon, offM, nearLat, nearLon } — what map.js's open()/updateFix() want
   updateStrips(profile, features, lastFixMi);
 
   // Best-effort one-shot fix. Fails silently on desktop/no-permission — the
@@ -224,6 +225,7 @@ async function main() {
     const snapped = Geo.snapWithProgress(fix.lat, fix.lon);
     Geo.recordFix('trip', fix, snapped);
     lastFixMi = snapped.mi;
+    lastMapFix = { lat: fix.lat, lon: fix.lon, offM: snapped.offM, nearLat: snapped.nearLat, nearLon: snapped.nearLon };
     profile.setFix({ mi: snapped.mi, eleFt: Geo.elevationAt(snapped.mi) });
     updateStrips(profile, features, lastFixMi);
   } catch { /* no fix available — fine */ }
@@ -239,6 +241,63 @@ async function main() {
       .then((fresh) => renderForecast(fresh, lastFixMi, active.ROUTE_MILES, active.ROUTE_IS_LOOP))
       .catch((e) => console.error('forecast refresh failed', e));
   }
+
+  // Map screen — dynamic import so nobody who never opens it pays for
+  // parsing MapLibre. Re-fetched/rebuilt on every open() call rather than
+  // kept alive in the background; this is a convenience screen, not
+  // something worth the memory of a persistent map instance.
+  let mapController = null;
+  let mapMod = null;
+  $('map-toggle').addEventListener('click', async () => {
+    $('map-screen').classList.add('open');
+    mapMod = mapMod || await import('./map.js');
+    const statusText = $('map-status-text');
+    const dlBtn = $('map-download-btn');
+    const dlOverlay = $('map-download');
+
+    const status = await mapMod.checkStatus(active.meta.id);
+    if (status.downloaded) {
+      dlOverlay.style.display = 'none';
+      try {
+        if (mapController) mapController.destroy();
+        mapController = await mapMod.open($('map-container'), {
+          routeId: active.meta.id, route: active, geo: Geo, features,
+          fix: lastMapFix,
+          onFeatureTap: openSheet,
+        });
+      } catch (e) {
+        console.error('map open failed', e);
+        dlOverlay.style.display = 'flex';
+        statusText.textContent = 'Map failed to load — try downloading again';
+        dlBtn.style.display = '';
+      }
+    } else {
+      dlOverlay.style.display = 'flex';
+      statusText.textContent = `Not downloaded yet${status.mb ? ` (${status.mb.toFixed(0)} MB partial)` : ''}`;
+      dlBtn.style.display = '';
+    }
+  });
+
+  $('map-download-btn').addEventListener('click', async () => {
+    const statusText = $('map-status-text');
+    const dlBtn = $('map-download-btn');
+    dlBtn.style.display = 'none';
+    try {
+      await mapMod.downloadAll(active.meta.id, (loaded, total) => {
+        statusText.textContent = `Downloading… ${(loaded / 1e6).toFixed(0)} / ${(total / 1e6).toFixed(0)} MB`;
+      });
+      $('map-toggle').click(); // re-check status now that it's downloaded, and open
+    } catch (e) {
+      console.error('map download failed', e);
+      statusText.textContent = 'Download failed — check connection and try again';
+      dlBtn.style.display = '';
+    }
+  });
+
+  $('map-back').addEventListener('click', () => {
+    $('map-screen').classList.remove('open');
+    if (mapController) { mapController.destroy(); mapController = null; }
+  });
 
   // Service worker: offline shell + cached basemap once those exist.
   if ('serviceWorker' in navigator) {

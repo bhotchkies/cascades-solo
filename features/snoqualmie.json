@@ -1,5 +1,35 @@
 [
  {
+  "kind": "junction",
+  "mi": 0,
+  "name": "Snoqualmie Mountain Trail",
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 0.021,
+  "name": "Snow Lake Trailhead",
+  "note": "Trailhead"
+ },
+ {
+  "kind": "bailout",
+  "mi": 0.023,
+  "name": "National Forest Development Road 9040",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "junction",
+  "mi": 0.758,
+  "name": "Snow Lake Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 1.693,
+  "name": "Source Lake Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 2.067,
   "name": "Lodge view",
@@ -16,12 +46,36 @@
   "lastReported": "2023-08-20"
  },
  {
+  "kind": "junction",
+  "mi": 2.324,
+  "name": "Snow Lake Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 2.391,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 2.662,
   "name": "another secret campground",
   "note": "also dope ",
   "count": 1,
   "lastReported": "2025-08-07"
+ },
+ {
+  "kind": "junction",
+  "mi": 2.869,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 2.923,
+  "name": null,
+  "note": null
  },
  {
   "kind": "water",
@@ -40,6 +94,18 @@
   "lastReported": "2023-10-08"
  },
  {
+  "kind": "junction",
+  "mi": 3.08,
+  "name": "Snow Lake Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 3.312,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 3.327,
   "name": "Site de camp",
@@ -54,6 +120,24 @@
   "note": null,
   "count": 2,
   "lastReported": "2025-07-07"
+ },
+ {
+  "kind": "junction",
+  "mi": 3.368,
+  "name": "High Lakes Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 4.914,
+  "name": "Rock Creek Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 6.817,
+  "name": "Middle Fork Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -72,6 +156,24 @@
   "lastReported": "2020-07-25"
  },
  {
+  "kind": "junction",
+  "mi": 8.234,
+  "name": "Middle Fork Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 9.09,
+  "name": "Old Cascade Crest Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 9.152,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 9.181,
   "name": "Caretaker Cabin",
@@ -88,12 +190,72 @@
   "lastReported": "2022-05-21"
  },
  {
+  "kind": "junction",
+  "mi": 9.454,
+  "name": "Goldmyer Hot Springs Trail / Middle Fork Tie #4 Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 9.569,
+  "name": "Middle Fork Tie #4 Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 9.649,
+  "name": "Dutch Miller Gap Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 10.496,
+  "name": "Old Copper Queen Road",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 11.318,
+  "name": "Dutch Miller Gap Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 12.106,
+  "name": "Hardscrabble Lake Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 12.354,
+  "name": "Middle Fork Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 12.616,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 12.645,
   "name": "Hardscrabble horse camp",
   "note": "Camp here night 1",
   "count": 3,
   "lastReported": "2025-08-07"
+ },
+ {
+  "kind": "junction",
+  "mi": 12.671,
+  "name": "Dutch Miller Gap Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 12.754,
+  "name": "Dutch Miller Gap Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -128,6 +290,12 @@
   "lastReported": "2025-08-07"
  },
  {
+  "kind": "junction",
+  "mi": 15.468,
+  "name": "Dutch Miller Gap Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 16.252,
   "name": "Camp spot",
@@ -144,12 +312,24 @@
   "lastReported": "2021-08-06"
  },
  {
+  "kind": "junction",
+  "mi": 17.99,
+  "name": "Dutch Miller Gap Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 17.994,
   "name": "Pedro camp",
   "note": "camp here night 2 & night 3",
   "count": 4,
   "lastReported": "2025-08-07"
+ },
+ {
+  "kind": "junction",
+  "mi": 18.755,
+  "name": "Williams Lake Trail / Dutch Miller Gap Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -160,6 +340,12 @@
   "lastReported": "2020-07-26"
  },
  {
+  "kind": "junction",
+  "mi": 19.775,
+  "name": "Lake Ivanhoe Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 20.035,
   "name": "Nice campsite",
@@ -168,12 +354,24 @@
   "lastReported": "2023-09-07"
  },
  {
+  "kind": "junction",
+  "mi": 20.199,
+  "name": "Lake Ivanhoe Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 20.342,
   "name": "Epic campsite",
   "note": null,
   "count": 1,
   "lastReported": "2020-07-26"
+ },
+ {
+  "kind": "junction",
+  "mi": 21.192,
+  "name": "Dutch Miller Gap Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -208,12 +406,24 @@
   "lastReported": "2017-04-10"
  },
  {
+  "kind": "bailout",
+  "mi": 23.184,
+  "name": "National Forest Development Road 9040",
+  "note": "Road crossing"
+ },
+ {
   "kind": "water",
   "mi": 23.47,
   "name": "Seasonal Water",
   "note": null,
   "count": 1,
   "lastReported": "2023-07-25"
+ },
+ {
+  "kind": "junction",
+  "mi": 25.558,
+  "name": "Pacific Crest Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -238,6 +448,12 @@
   "note": null,
   "count": 1,
   "lastReported": "2022-08-14"
+ },
+ {
+  "kind": "junction",
+  "mi": 27.899,
+  "name": "Waptus Burn Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -288,6 +504,12 @@
   "lastReported": "2023-07-25"
  },
  {
+  "kind": "junction",
+  "mi": 30.004,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 30.122,
   "name": "Camp 2nd night?",
@@ -312,6 +534,12 @@
   "lastReported": "2023-07-25"
  },
  {
+  "kind": "junction",
+  "mi": 30.905,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 30.905,
   "name": "POND CAMP",
@@ -328,12 +556,24 @@
   "lastReported": "2024-01-17"
  },
  {
+  "kind": "junction",
+  "mi": 32.381,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 35.732,
   "name": "Camp 1 - 23 miles",
   "note": null,
   "count": 1,
   "lastReported": "2015-07-13"
+ },
+ {
+  "kind": "junction",
+  "mi": 35.769,
+  "name": "Chimney Rock Bootpath",
+  "note": null
  },
  {
   "kind": "camp",
@@ -344,12 +584,30 @@
   "lastReported": "2023-08-01"
  },
  {
+  "kind": "junction",
+  "mi": 36.323,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 36.373,
   "name": "camp 2 in lemah meadow",
   "note": "Several large campsites here.  Nearby creek.",
   "count": 17,
   "lastReported": "2026-06-27"
+ },
+ {
+  "kind": "junction",
+  "mi": 36.459,
+  "name": "Lemah Meadow Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 36.558,
+  "name": "Pacific Crest Trail",
+  "note": null
  },
  {
   "kind": "water",
@@ -360,12 +618,36 @@
   "lastReported": "2026-08-09"
  },
  {
+  "kind": "junction",
+  "mi": 36.851,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 37.139,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 37.181,
   "name": "Camp 7 (Day 2) & Challenging ford",
   "note": "Two campsites near South Fork Lemah Creek, .8 mi past Pete Lake Trail junction. 2 campsites near the creek. Least desireable is to the left just before the creek- room for only one",
   "count": 3,
   "lastReported": "2023-08-01"
+ },
+ {
+  "kind": "junction",
+  "mi": 37.486,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 37.861,
+  "name": "Pete Lake Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -376,12 +658,24 @@
   "lastReported": "2020-09-11"
  },
  {
+  "kind": "junction",
+  "mi": 38.104,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 38.806,
   "name": "Water",
   "note": null,
   "count": 1,
   "lastReported": "2023-07-25"
+ },
+ {
+  "kind": "junction",
+  "mi": 39.049,
+  "name": "Pacific Crest Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -392,6 +686,18 @@
   "lastReported": "2024-08-08"
  },
  {
+  "kind": "junction",
+  "mi": 39.674,
+  "name": "Old Spectacle Lake Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 39.74,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 40.169,
   "name": "Camp @Spectacle",
@@ -400,12 +706,30 @@
   "lastReported": "2025-09-02"
  },
  {
+  "kind": "junction",
+  "mi": 40.224,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 40.652,
+  "name": "Spectacle Lake Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 40.652,
   "name": "Camp night 2",
   "note": null,
   "count": 3,
   "lastReported": "2025-09-22"
+ },
+ {
+  "kind": "junction",
+  "mi": 41.827,
+  "name": "Pacific Crest Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -432,6 +756,12 @@
   "lastReported": "2022-04-10"
  },
  {
+  "kind": "junction",
+  "mi": 43.12,
+  "name": "Mineral Creek Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 43.151,
   "name": "Small Park Lakes Camp",
@@ -446,6 +776,12 @@
   "note": null,
   "count": 4,
   "lastReported": "2023-07-25"
+ },
+ {
+  "kind": "junction",
+  "mi": 43.815,
+  "name": null,
+  "note": null
  },
  {
   "kind": "water",
@@ -472,12 +808,30 @@
   "lastReported": "2025-08-21"
  },
  {
+  "kind": "junction",
+  "mi": 47.137,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 47.219,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 47.325,
   "name": "Possible camp 1",
   "note": "Sensitive area, could be some flat rock areas to camp on. Read FarOut",
   "count": 2,
   "lastReported": "2025-01-14"
+ },
+ {
+  "kind": "junction",
+  "mi": 47.387,
+  "name": "Pacific Crest Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -504,12 +858,30 @@
   "lastReported": "2019-09-14"
  },
  {
+  "kind": "junction",
+  "mi": 49.334,
+  "name": "Alaska Mountain Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 49.435,
   "name": "Day 1 Camp",
   "note": "Camp in this area or back by creek route. Find best spot/adventure",
   "count": 1,
   "lastReported": "2017-06-16"
+ },
+ {
+  "kind": "junction",
+  "mi": 50.284,
+  "name": "Bumblebee Pass Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 50.671,
+  "name": "Ridge Lake Camp Trail",
+  "note": null
  },
  {
   "kind": "water",
@@ -520,6 +892,12 @@
   "lastReported": "2021-07-12"
  },
  {
+  "kind": "junction",
+  "mi": 50.736,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 50.77,
   "name": "alternative camp",
@@ -528,12 +906,42 @@
   "lastReported": "2025-09-22"
  },
  {
+  "kind": "junction",
+  "mi": 50.906,
+  "name": "Ridge Lake Camp Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 51.066,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 51.924,
+  "name": "Pacific Crest Trail",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 52.54,
+  "name": null,
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 53.619,
   "name": "Camp spot",
   "note": "Room for 3 tents",
   "count": 7,
   "lastReported": "2024-08-13"
+ },
+ {
+  "kind": "junction",
+  "mi": 53.749,
+  "name": "Pacific Crest Trail",
+  "note": null
  },
  {
   "kind": "camp",
@@ -600,6 +1008,12 @@
   "lastReported": "2022-08-13"
  },
  {
+  "kind": "junction",
+  "mi": 55.575,
+  "name": "Commonwealth Basin Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 55.791,
   "name": "Camping spot",
@@ -608,11 +1022,197 @@
   "lastReported": "2023-07-08"
  },
  {
+  "kind": "junction",
+  "mi": 55.8,
+  "name": "Old Commonwealth Trail",
+  "note": null
+ },
+ {
   "kind": "water",
   "mi": 55.813,
   "name": "River crossing",
   "note": "Creek cross point",
   "count": 5,
   "lastReported": "2026-06-19"
+ },
+ {
+  "kind": "junction",
+  "mi": 56.045,
+  "name": "Log Foot Bridge",
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 56.299,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 56.607,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "junction",
+  "mi": 56.769,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 56.816,
+  "name": "Pacific Crest Trail North - Snoqualmie Pass Trailhead",
+  "note": "Trailhead"
+ },
+ {
+  "kind": "junction",
+  "mi": 56.873,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 56.908,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 56.921,
+  "name": "Erste Strasse",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 56.929,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.032,
+  "name": "Erste Strasse",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.125,
+  "name": "Erste Strasse",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.125,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.128,
+  "name": "Ober Strasse",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.166,
+  "name": "Erste Strasse",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "junction",
+  "mi": 57.194,
+  "name": "Well Access Road, Snoqualmie Pass Utility District",
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.2,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.264,
+  "name": "Alpental Strasse",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.338,
+  "name": "Erste Strasse",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.537,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.538,
+  "name": "Alpental Strasse",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.56,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.57,
+  "name": "National Forest Development Road 9040",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.658,
+  "name": "Alpenrose",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.673,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.718,
+  "name": "National Forest Development Road 9040",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "junction",
+  "mi": 57.739,
+  "name": null,
+  "note": null
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.816,
+  "name": "National Forest Development Road 9040",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.839,
+  "name": "Road crossing",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.884,
+  "name": "National Forest Development Road 9040",
+  "note": "Road crossing"
+ },
+ {
+  "kind": "bailout",
+  "mi": 57.918,
+  "name": "Road crossing",
+  "note": "Road crossing"
  }
 ]

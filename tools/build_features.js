@@ -41,15 +41,9 @@ const RAW_DIR = path.join(__dirname, '..', 'features');
 // sources (a spring and a nearby creek are not the same feature).
 const CLUSTER_MI = { camping: 0.15, water: 0.08 };
 
-// A junction candidate has to sit within this many meters of the route to
+// A junction touch-run has to sit within this many meters of the route to
 // count as touching it at all, rather than merely running nearby.
 const JUNCTION_MAX_OFFSET_M = 15;
-// ...and its local bearing has to differ from the route's own bearing by at
-// least this much — otherwise it is the same trail (or one running
-// alongside it) rather than a real branch. Without this, every OSM way that
-// happens to share the corridor gets flagged as "crossing" the route at
-// every one of its vertices.
-const JUNCTION_MIN_BEARING_DIFF_DEG = 25;
 // Junction candidates within this along-trail distance of each other are
 // almost certainly the same real junction, found from both ways' vertices.
 const JUNCTION_MERGE_MI = 0.05;
@@ -73,20 +67,6 @@ function makeProjection(midLat) {
   return (lat, lon) => [lon * KX, lat * KY];
 }
 
-function bearingDeg(a, b) {
-  // a, b are {lat, lon}. Not great-circle-precise, but fine at trail scale.
-  const dLon = (b.lon - a.lon) * DEG;
-  const y = Math.sin(dLon) * Math.cos(b.lat * DEG);
-  const x = Math.cos(a.lat * DEG) * Math.sin(b.lat * DEG)
-    - Math.sin(a.lat * DEG) * Math.cos(b.lat * DEG) * Math.cos(dLon);
-  return (Math.atan2(y, x) / DEG + 360) % 360;
-}
-
-function angleDiffDeg(a, b) {
-  const d = Math.abs(a - b) % 360;
-  return d > 180 ? 360 - d : d;
-}
-
 // A route wrapper over the flat-quintuple ROUTE array, offering nearest-point
 // lookups. Distinct from geo.js's runtime version (which handles GPS-fix
 // disambiguation with a progress hint) — this build tool doesn't need that,
@@ -101,45 +81,27 @@ function makeRouteIndex(ROUTE, ROUTE_STRIDE, midLat) {
     return { lat: ROUTE[o], lon: ROUTE[o + 1], mi: ROUTE[o + 2] };
   };
 
-  // All local minima of perpendicular distance — same approach as
-  // geo.js:candidatesFor, reimplemented here rather than imported since this
-  // file is CommonJS (Node build tooling) and geo.js is an ES module meant
-  // for the browser (routes are injected via setRoute() there).
-  function candidates(lat, lon) {
+  // Global-nearest point on the route to (lat, lon) — offset in meters plus
+  // the interpolated trail mile there. This build tool doesn't need
+  // geo.js's multi-candidate loop disambiguation (that's for resolving a
+  // live GPS fix against a progress hint); a fixed OSM feature just needs
+  // whichever point on the route is physically closest to it.
+  function nearest(lat, lon) {
     const [px, py] = project(lat, lon);
-    const dist = new Float64Array(n - 1);
-    const mi = new Float64Array(n - 1);
-    const bearing = new Float64Array(n - 1);
+    let bestD = Infinity, bestMi = 0;
     for (let i = 0; i < n - 1; i++) {
       const a = pointAt(i), b = pointAt(i + 1);
       const [ax, ay] = project(a.lat, a.lon), [bx, by] = project(b.lat, b.lon);
       const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy;
       let u = L ? ((px - ax) * dx + (py - ay) * dy) / L : 0;
       u = Math.max(0, Math.min(1, u));
-      dist[i] = Math.hypot(px - (ax + u * dx), py - (ay + u * dy));
-      mi[i] = a.mi + (b.mi - a.mi) * u;
-      bearing[i] = bearingDeg(a, b);
+      const d = Math.hypot(px - (ax + u * dx), py - (ay + u * dy));
+      if (d < bestD) { bestD = d; bestMi = a.mi + (b.mi - a.mi) * u; }
     }
-    const out = [];
-    for (let i = 0; i < dist.length; i++) {
-      const prev = i > 0 ? dist[i - 1] : Infinity;
-      const next = i < dist.length - 1 ? dist[i + 1] : Infinity;
-      if (dist[i] <= prev && dist[i] <= next) out.push({ offM: dist[i], mi: mi[i], bearing: bearing[i] });
-    }
-    return out;
+    return { offM: bestD, mi: bestMi };
   }
 
-  // Single nearest candidate — used for waypoints, which describe one
-  // physical spot and should get one mile (unless truly ambiguous; see
-  // clusterWaypoints, which currently takes the plain nearest).
-  function nearest(lat, lon) {
-    const c = candidates(lat, lon);
-    let best = c[0];
-    for (const cand of c) if (cand.offM < best.offM) best = cand;
-    return best;
-  }
-
-  return { candidates, nearest, ROUTE_MILES: pointAt(n - 1).mi };
+  return { nearest, ROUTE_MILES: pointAt(n - 1).mi };
 }
 
 // ------------------------------------------------------------------ overpass
@@ -154,16 +116,28 @@ async function overpassQuery(ql) {
   // camp/water clusters still get written; re-run the script later.
   for (const url of OVERPASS_URLS) {
     try {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), 90000); // the query itself asks for [timeout:60]; give the HTTP round-trip some margin
       const res = await fetch(url, {
+        signal: ctl.signal,
         method: 'POST',
-        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+          // Overpass mirrors rate-limit or reject requests without one —
+          // Node's fetch sends no User-Agent by default (curl sends its own,
+          // which is why manual curl testing worked while this didn't). The
+          // actual 406/429 responses seen while building this were the
+          // mirrors asking for exactly this, not real overload.
+          'user-agent': 'cascades-solo-build (personal trip-planning tool; one-off script run by hand)',
+        },
         body: 'data=' + encodeURIComponent(ql),
       });
+      clearTimeout(timer);
       if (!res.ok) { lastErr = new Error(`${url} -> HTTP ${res.status}`); continue; }
       const json = await res.json();
       return json.elements || [];
     } catch (e) {
-      lastErr = e;
+      lastErr = e.name === 'AbortError' ? new Error(`${url} -> timed out`) : e;
     }
     await sleep(2000);
   }
@@ -238,24 +212,71 @@ function clusterWaypoints(routeIndex, raw, cat, thresholdMi) {
 }
 
 // ------------------------------------------------------------------ junctions
+//
+// v1 flagged a junction at every OSM way vertex within JUNCTION_MAX_OFFSET_M
+// of the route whose local bearing differed from the route's — which fires
+// constantly wherever an OSM path just runs alongside the route for a
+// while (very common: many of these "path" ways ARE stretches of the same
+// PCT/Snowgrass/etc. trail the route follows, digitized as separate OSM
+// ways, with enough per-vertex noise to look like a "different bearing" at
+// plenty of individual points). Result: 994 "junctions" on a 60 mi trail —
+// obviously wrong.
+//
+// Fixed approach: collapse each way's CONTIGUOUS run of close vertices into
+// one touch point, then only call it a real junction if the way actually
+// diverges away from the route (past DIVERGE_MIN_M) within a bounded
+// look-ahead on at least one side of that touch run. A way that stays near
+// the route before and after touching it is the same trail, not a branch.
+// A way that starts or ends exactly at the touch run is treated as
+// diverging by definition — that's a real spur or connector trail meeting
+// the route, not noise.
+
+const DIVERGE_MIN_M = 60;
+const DIVERGE_LOOKAHEAD_VERTICES = 8;
+
+function findTouchRuns(offsets, maxOffsetM) {
+  const runs = [];
+  let i = 0;
+  while (i < offsets.length) {
+    if (offsets[i].offM <= maxOffsetM) {
+      const start = i;
+      while (i < offsets.length && offsets[i].offM <= maxOffsetM) i++;
+      runs.push({ start, end: i - 1 });
+    } else {
+      i++;
+    }
+  }
+  return runs;
+}
+
+function runDiverges(offsets, run) {
+  const divergesBefore = run.start === 0 || (() => {
+    for (let k = run.start - 1; k >= Math.max(0, run.start - DIVERGE_LOOKAHEAD_VERTICES); k--) {
+      if (offsets[k].offM > DIVERGE_MIN_M) return true;
+    }
+    return false;
+  })();
+  const divergesAfter = run.end === offsets.length - 1 || (() => {
+    for (let k = run.end + 1; k <= Math.min(offsets.length - 1, run.end + DIVERGE_LOOKAHEAD_VERTICES); k++) {
+      if (offsets[k].offM > DIVERGE_MIN_M) return true;
+    }
+    return false;
+  })();
+  return divergesBefore || divergesAfter;
+}
 
 function junctionsFromPaths(routeIndex, ways) {
   const candidates = [];
   for (const way of ways) {
     if (!way.geometry || way.geometry.length < 2) continue;
     const wayName = way.tags && way.tags.name ? way.tags.name : null;
-    for (let i = 0; i < way.geometry.length; i++) {
-      const pt = way.geometry[i];
-      const prev = way.geometry[i - 1];
-      const next = way.geometry[i + 1];
-      if (!prev && !next) continue;
-      const wayBearing = bearingDeg(prev || pt, next || pt);
-      for (const cand of routeIndex.candidates(pt.lat, pt.lon)) {
-        if (cand.offM > JUNCTION_MAX_OFFSET_M) continue;
-        if (angleDiffDeg(cand.bearing, wayBearing) < JUNCTION_MIN_BEARING_DIFF_DEG
-          && angleDiffDeg(cand.bearing, (wayBearing + 180) % 360) < JUNCTION_MIN_BEARING_DIFF_DEG) continue;
-        candidates.push({ mi: cand.mi, name: wayName });
-      }
+    const offsets = way.geometry.map((pt) => routeIndex.nearest(pt.lat, pt.lon));
+    const runs = findTouchRuns(offsets, JUNCTION_MAX_OFFSET_M);
+    for (const run of runs) {
+      if (!runDiverges(offsets, run)) continue;
+      let sum = 0;
+      for (let k = run.start; k <= run.end; k++) sum += offsets[k].mi;
+      candidates.push({ mi: sum / (run.end - run.start + 1), name: wayName });
     }
   }
   candidates.sort((a, b) => a.mi - b.mi);
@@ -291,14 +312,15 @@ function bailoutsFromRoadsAndTrailheads(routeIndex, elements) {
       continue;
     }
     if (el.type === 'way' && el.geometry && el.geometry.length >= 2) {
-      // Real crossings only: a road running alongside the trail for a
-      // while would otherwise report a bail-out at every vertex.
+      // One bail-out per contiguous touch run, not one per vertex — a road
+      // that stays within range for several OSM vertices (dense digitizing
+      // near an access point) is a single real crossing, not several.
       const roadName = el.tags && el.tags.name ? el.tags.name : (el.tags && el.tags.ref) || 'Road crossing';
-      for (const pt of el.geometry) {
-        const cand = routeIndex.nearest(pt.lat, pt.lon);
-        if (cand.offM <= JUNCTION_MAX_OFFSET_M) {
-          out.push({ kind: 'bailout', mi: cand.mi, name: roadName, note: 'Road crossing' });
-        }
+      const offsets = el.geometry.map((pt) => routeIndex.nearest(pt.lat, pt.lon));
+      for (const run of findTouchRuns(offsets, JUNCTION_MAX_OFFSET_M)) {
+        let sum = 0;
+        for (let k = run.start; k <= run.end; k++) sum += offsets[k].mi;
+        out.push({ kind: 'bailout', mi: sum / (run.end - run.start + 1), name: roadName, note: 'Road crossing' });
       }
     }
   }

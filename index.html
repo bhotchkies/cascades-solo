@@ -179,6 +179,31 @@ footer.foot {
   padding: 10px 14px 18px; font-size: 11px; color: var(--ink-mute); text-align: center;
 }
 
+/* ---- map screen */
+#map-toggle {
+  border: 1px solid var(--rule); background: var(--panel); color: var(--ink);
+  border-radius: 999px; padding: 4px 10px; font-size: 12px; margin-right: 6px;
+}
+#map-screen {
+  display: none; position: fixed; inset: 0; z-index: 20; background: var(--ground);
+}
+#map-screen.open { display: block; }
+#map-container { position: absolute; inset: 0; }
+#map-back {
+  position: absolute; top: 10px; left: 10px; z-index: 21;
+  border: 1px solid var(--rule); background: var(--ground-2); color: var(--ink);
+  border-radius: 999px; padding: 6px 14px; font-size: 13px;
+}
+#map-download {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px; padding: 20px; text-align: center;
+}
+#map-download button {
+  border: 1px solid var(--rule); background: var(--accent); color: #0C1611;
+  border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 700;
+}
+#map-download .map-status { font-size: 12px; color: var(--ink-mute); }
+
 /* ---- alerts banner: NWS active alerts (Red Flag, Fire Weather Watch, etc) */
 #alerts-banner {
   display: none; padding: 10px 14px; background: rgba(216,103,79,.18);
@@ -227,8 +252,18 @@ footer.foot {
     <h1>Cascades Solo</h1>
     <div class="route-name" id="route-name">No route selected</div>
   </div>
+  <button id="map-toggle" type="button">Map</button>
   <button id="theme-toggle" type="button" aria-label="Toggle paper theme">☾</button>
 </header>
+
+<div id="map-screen">
+  <div id="map-container"></div>
+  <div id="map-download">
+    <div class="map-status" id="map-status-text">Checking map download…</div>
+    <button id="map-download-btn" type="button" style="display:none">Download offline map</button>
+  </div>
+  <button id="map-back" type="button">✕ Close map</button>
+</div>
 
 <div id="status" role="status">
   <span class="dot"></span>

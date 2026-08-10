@@ -1,120 +1,30 @@
-// The map's visual style: restyled to the app's khaki/forest palette rather
-// than a stock OSM look, and deliberately spare — no sprite sheet (icons are
-// plain MapLibre circle layers), one font (Latin-only glyph range, since
-// every WHW place name is plain ASCII).
+// The map's visual style. Unlike the WHW app this was forked from (a
+// Protomaps vector extract, restyled per-layer), this ships a single USGS
+// National Map topo RASTER source — see tools/build_map.js for why: no
+// pre-built vector archive exists to extract from for USGS tiles, only
+// individual raster tiles to download and pack. That trades away themeable
+// vector styling for the actual thing this app was asked for: real contour
+// lines in feet, the FarOut-style look, with zero rendering work on our
+// side since the tiles already look the way they should.
 //
-// Both `wide` and `corridor` PMTiles archives share the same Protomaps v4
-// schema (source-layer names below), since both are extracts of the same
-// planet build — only their spatial extent and maxzoom differ. `wide`'s
-// layers are added first (bottom), `corridor`'s on top: outside the
-// corridor's extent those tiles are simply empty, so the coarse backdrop
-// shows through rather than a blank screen.
-//
-// See https://docs.protomaps.com/basemaps/layers for the schema this style
-// is written against.
+// One archive per route (the chosen one, downloaded at runtime — see
+// map.js) rather than WHW's two-tier corridor+wide split. A raster archive
+// this size already spans z9-15, so there's no separate "coarse fallback"
+// layer needed the way WHW needed one for its narrower vector corridor.
 
-const GROUND = '#EFE8D6';
-const INK = '#10261A';
-const INK_STRONG = '#05120A';
-const INK_MUTE = 'rgba(16,38,26,.55)';
-const RULE = 'rgba(16,38,26,.35)';
-const WATER = '#9FB3C8';
-const PANEL = 'rgba(16,38,26,.08)';
-
-// MapLibre validates that a style's `glyphs` URL literally contains
-// {fontstack} and {range} tokens and throws if either is missing — it does
-// NOT treat a missing token as a no-op substitution. Since this app only
-// ships one glyph file (Latin, 0-255 — covers every WHW place name) backed
-// by a blob: URL that can't have a real sub-path, the template here is a
-// placeholder that only exists to pass that validation; map.js's
-// `transformRequest` intercepts every actual glyph request and redirects it
-// to the real blob URL regardless of which {fontstack}/{range} was asked for.
-
-// One layer stack, parameterised by source id and a `detail` flag. `wide`
-// gets `detail: false` — earth/water/major roads/place labels only, since it
-// exists purely so off-corridor is "coarse" rather than "blank". `corridor`
-// gets the full stack.
-function layersFor(sourceId, { detail }) {
-  const layers = [
-    {
-      id: `${sourceId}-earth`, type: 'fill', source: sourceId, 'source-layer': 'earth',
-      paint: { 'fill-color': GROUND },
-    },
-    {
-      id: `${sourceId}-water`, type: 'fill', source: sourceId, 'source-layer': 'water',
-      paint: { 'fill-color': WATER },
-    },
-  ];
-
-  if (detail) {
-    layers.push({
-      id: `${sourceId}-landuse`, type: 'fill', source: sourceId, 'source-layer': 'landuse',
-      filter: ['in', ['get', 'kind'], ['literal', ['park', 'forest', 'nature_reserve']]],
-      paint: { 'fill-color': PANEL },
-    });
-  }
-
-  layers.push({
-    id: `${sourceId}-roads-major`, type: 'line', source: sourceId, 'source-layer': 'roads',
-    filter: ['in', ['get', 'kind'], ['literal', ['highway', 'major_road']]],
-    paint: { 'line-color': INK_MUTE, 'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.6, 14, 2] },
-  });
-
-  if (detail) {
-    layers.push(
-      {
-        id: `${sourceId}-roads-minor`, type: 'line', source: sourceId, 'source-layer': 'roads',
-        filter: ['==', ['get', 'kind'], 'minor_road'],
-        minzoom: 12,
-        paint: { 'line-color': RULE, 'line-width': 1 },
-      },
-      {
-        id: `${sourceId}-paths`, type: 'line', source: sourceId, 'source-layer': 'roads',
-        filter: ['==', ['get', 'kind'], 'path'],
-        minzoom: 13,
-        paint: { 'line-color': INK, 'line-width': 1, 'line-dasharray': [1, 1.5] },
-      },
-      {
-        id: `${sourceId}-buildings`, type: 'fill', source: sourceId, 'source-layer': 'buildings',
-        minzoom: 14,
-        paint: { 'fill-color': PANEL, 'fill-outline-color': RULE },
-      },
-    );
-  }
-
-  layers.push({
-    id: `${sourceId}-places`, type: 'symbol', source: sourceId, 'source-layer': 'places',
-    filter: detail
-      ? true
-      : ['in', ['get', 'kind'], ['literal', ['locality', 'region', 'country']]],
-    layout: {
-      'text-field': ['get', 'name'],
-      'text-font': ['Noto Sans Regular'],
-      'text-size': ['interpolate', ['linear'], ['zoom'], 8, 10, 14, 13],
-    },
-    paint: {
-      'text-color': INK_STRONG,
-      'text-halo-color': GROUND,
-      'text-halo-width': 1.2,
-    },
-  });
-
-  return layers;
-}
-
-export function buildStyle() {
+export function buildStyle(sourceId) {
   return {
     version: 8,
-    // Never actually fetched as written — see the comment above.
-    glyphs: 'glyphs://local/{fontstack}/{range}.pbf',
     sources: {
-      wide: { type: 'vector', url: 'pmtiles://wide' },
-      corridor: { type: 'vector', url: 'pmtiles://corridor' },
+      [sourceId]: {
+        type: 'raster',
+        url: `pmtiles://${sourceId}`,
+        tileSize: 256,
+      },
     },
     layers: [
-      { id: 'background', type: 'background', paint: { 'background-color': GROUND } },
-      ...layersFor('wide', { detail: false }),
-      ...layersFor('corridor', { detail: true }),
+      { id: 'background', type: 'background', paint: { 'background-color': '#1B1F1C' } },
+      { id: `${sourceId}-raster`, type: 'raster', source: sourceId },
     ],
   };
 }
