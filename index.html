@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Cascades Solo</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#1B1F1C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cascades">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<link rel="icon" href="./icon-192.png">
+<style>
+/* Dark by default — this is a screen read in daylight glare and at 5am trailhead
+   light, not a themed brand page. A "paper" variant is available for planning at
+   a desk but the phone-in-hand default is the dark one. */
+:root {
+  --ground: #1B1F1C;
+  --ground-2: #23281F;
+  --ink: #EDEFE6;
+  --ink-strong: #FFFFFF;
+  --ink-mute: rgba(237,239,230,.62);
+  --rule: rgba(237,239,230,.16);
+  --panel: rgba(237,239,230,.06);
+  --accent: #7FB88A;
+  --amber: #D8A34A;
+  --red: #D8674F;
+  --water: #5FA8C9;
+  --you: #E8543A;
+}
+body.paper {
+  --ground: #EFE9DC;
+  --ground-2: #E5DEC9;
+  --ink: #24291F;
+  --ink-strong: #10130D;
+  --ink-mute: rgba(36,41,31,.66);
+  --rule: rgba(36,41,31,.28);
+  --panel: rgba(36,41,31,.06);
+  --accent: #2F6B3C;
+  --water: #2C6E8C;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  padding-bottom: env(safe-area-inset-bottom);
+  overflow-x: hidden;
+}
+
+.smallcaps {
+  font-size: 10.5px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-mute);
+}
+
+header.top {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 10px 14px 6px;
+}
+header.top h1 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: .01em; }
+header.top .route-name { font-size: 12px; color: var(--ink-mute); }
+#theme-toggle {
+  border: 1px solid var(--rule); background: var(--panel); color: var(--ink);
+  border-radius: 999px; padding: 4px 10px; font-size: 12px; line-height: 1.3;
+}
+
+/* ---- staleness bar: always visible, never dismissible */
+#status {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px; margin: 0;
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  font-size: 12px;
+}
+#status .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--ink-mute); flex: none; }
+#status.green .dot { background: var(--accent); }
+#status.amber .dot { background: var(--amber); }
+#status.red .dot { background: var(--red); }
+#status .text { color: var(--ink-mute); }
+
+/* ---- next-feature strip: the standing-question row, always visible above
+   the profile without any interaction required */
+#next-strip {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px;
+  background: var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+#next-strip .cell {
+  background: var(--ground); padding: 9px 10px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+#next-strip .label { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mute); }
+#next-strip .value { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+#next-strip .sub { font-size: 11px; color: var(--ink-mute); }
+
+/* ---- climb readout for the visible window */
+#climb-strip {
+  display: flex; gap: 16px; padding: 6px 14px;
+  font-size: 12px; color: var(--ink-mute);
+  border-bottom: 1px solid var(--rule);
+}
+#climb-strip b { color: var(--ink); font-weight: 700; }
+
+/* ---- profile: the app */
+#profile-wrap {
+  position: relative;
+  touch-action: none; /* profile.js owns pan/pinch entirely */
+  user-select: none;
+  -webkit-user-select: none;
+}
+#profile-svg { display: block; width: 100%; height: 62vh; min-height: 320px; }
+.ep-grid { stroke: var(--rule); stroke-width: 1; }
+.ep-vgrid { opacity: .6; }
+.ep-ylab { fill: var(--ink-mute); font: 600 9px/1 system-ui, sans-serif; dominant-baseline: middle; text-anchor: end; }
+.ep-xlab { fill: var(--ink-mute); font: 600 9px/1 system-ui, sans-serif; text-anchor: middle; }
+.ep-area { fill: var(--accent); opacity: .14; }
+.ep-line { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linejoin: round; }
+.ep-you { stroke: var(--you); stroke-width: 1.2; stroke-dasharray: 3 2; }
+.ep-youdot { fill: var(--you); stroke: var(--ground); stroke-width: 1.5; }
+.ep-marker-stem { stroke: var(--rule); stroke-width: 1; }
+.ep-marker { stroke: var(--ground); stroke-width: 1.3; cursor: pointer; }
+.ep-marker-label {
+  fill: var(--ink-mute); font: 500 9px/1 system-ui, sans-serif; text-anchor: middle;
+  pointer-events: none;
+}
+
+/* ---- zoom controls */
+#profile-controls {
+  position: absolute; right: 8px; bottom: 8px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+#profile-controls button {
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 1px solid var(--rule); background: var(--panel); color: var(--ink);
+  font-size: 18px; line-height: 1;
+}
+#reset-view {
+  position: absolute; left: 8px; bottom: 8px;
+  border: 1px solid var(--rule); background: var(--panel); color: var(--ink);
+  border-radius: 999px; padding: 6px 12px; font-size: 12px;
+  display: none;
+}
+#reset-view.shown { display: block; }
+
+/* ---- feature detail sheet */
+#sheet-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,.4);
+  display: none; z-index: 10;
+}
+#sheet-backdrop.open { display: block; }
+#sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 11;
+  background: var(--ground-2); border-top: 1px solid var(--rule);
+  border-radius: 14px 14px 0 0;
+  padding: 16px 18px calc(18px + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform .18s ease-out;
+}
+#sheet.open { transform: translateY(0); }
+#sheet h2 { margin: 0 0 4px; font-size: 16px; }
+#sheet .meta { font-size: 12px; color: var(--ink-mute); margin-bottom: 8px; }
+#sheet .note { font-size: 13px; }
+#sheet .reports { font-size: 11px; color: var(--ink-mute); margin-top: 6px; }
+#sheet-close {
+  position: absolute; top: 10px; right: 12px;
+  background: none; border: none; color: var(--ink-mute); font-size: 20px; line-height: 1;
+}
+
+footer.foot {
+  padding: 10px 14px 18px; font-size: 11px; color: var(--ink-mute); text-align: center;
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <h1>Cascades Solo</h1>
+    <div class="route-name" id="route-name">No route selected</div>
+  </div>
+  <button id="theme-toggle" type="button" aria-label="Toggle paper theme">☾</button>
+</header>
+
+<div id="status" role="status">
+  <span class="dot"></span>
+  <span class="text" id="status-text">No data yet</span>
+</div>
+
+<div id="next-strip">
+  <div class="cell">
+    <span class="label">Next water</span>
+    <span class="value" id="next-water">—</span>
+    <span class="sub" id="next-water-sub"></span>
+  </div>
+  <div class="cell">
+    <span class="label">Next camp</span>
+    <span class="value" id="next-camp">—</span>
+    <span class="sub" id="next-camp-sub"></span>
+  </div>
+  <div class="cell">
+    <span class="label">Next junction</span>
+    <span class="value" id="next-junction">—</span>
+    <span class="sub" id="next-junction-sub"></span>
+  </div>
+</div>
+
+<div id="climb-strip">
+  <span>Visible climb <b id="climb-gain">—</b></span>
+  <span>Avg grade <b id="climb-grade">—</b></span>
+  <span>Top <b id="climb-top">—</b></span>
+</div>
+
+<div id="profile-wrap">
+  <svg id="profile-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" role="img" aria-label="Elevation profile"></svg>
+  <div id="profile-controls">
+    <button id="zoom-in" type="button" aria-label="Zoom in">+</button>
+    <button id="zoom-out" type="button" aria-label="Zoom out">−</button>
+  </div>
+  <button id="reset-view" type="button">Show whole route</button>
+</div>
+
+<div id="sheet-backdrop"></div>
+<div id="sheet" role="dialog" aria-modal="true">
+  <button id="sheet-close" type="button" aria-label="Close">✕</button>
+  <h2 id="sheet-title">—</h2>
+  <div class="meta" id="sheet-meta"></div>
+  <div class="note" id="sheet-note"></div>
+  <div class="reports" id="sheet-reports"></div>
+</div>
+
+<footer class="foot">Cascades Solo · convenience only, not a safety tool</footer>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
