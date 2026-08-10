@@ -585,7 +585,9 @@ async function main() {
     navigator.serviceWorker.addEventListener('message', (e) => {
       if (e.data?.type === 'VERSION') $('app-version').textContent = e.data.version;
     });
-    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {});
+    // type: 'module' so sw.js can `import { APP_VERSION } from './version.js'`
+    // rather than hand-keeping its own copy — see version.js's header.
+    navigator.serviceWorker.register('./sw.js', { type: 'module', updateViaCache: 'none' }).catch(() => {});
     navigator.serviceWorker.ready.then((reg) => reg.active?.postMessage('GET_VERSION')).catch(() => {});
   }
 }

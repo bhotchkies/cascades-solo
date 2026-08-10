@@ -8,15 +8,19 @@
 // no mid-trip switching" decision: there's no reason to carry the other
 // route's 20+ MB.
 
+import { ARCHIVE_VERSION } from './version.js';
+
 const DB_NAME = 'csolo-map';
 const DB_VERSION = 1;
 const STORE = 'archives';
 
-// Bump whenever a route's .pmtiles is rebuilt and recommitted (tools/build_map.js).
-// The integrity check below only verifies a downloaded archive isn't
-// corrupted — it can't know the *content* is stale, so this is what makes a
-// rebuilt-but-already-downloaded archive show up as "not downloaded" again.
-const ARCHIVE_VERSION = 2;
+// ARCHIVE_VERSION (from version.js): bump whenever a route's .pmtiles is
+// rebuilt and recommitted (tools/build_map.js), or a vendored map file
+// changes. The integrity check below only verifies a downloaded archive
+// isn't corrupted — it can't know the *content* is stale, so this is what
+// makes a rebuilt-but-already-downloaded archive show up as "not
+// downloaded" again. Kept separate from sw.js's shell VERSION — see
+// version.js's header for why.
 
 const VENDOR_FILES = [
   { name: 'maplibre-js', file: './map/maplibre-gl.js', mime: 'text/javascript' },
