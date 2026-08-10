@@ -9,6 +9,7 @@
 import * as Geo from './geo.js';
 import { ROUTES, getActiveRouteId, setActiveRouteId, routeById, loadActiveRoute } from './routes/index.js';
 import { Profile } from './profile.js';
+import * as Forecast from './forecast.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -108,6 +109,71 @@ function updateStrips(profile, features, fixMi) {
   $('climb-top').textContent = Number.isFinite(topFt) ? Geo.feetStr(topFt) : '—';
 }
 
+// --------------------------------------------------------------- forecast
+
+const AQI_LABEL = (aqi) => (aqi == null ? '' : aqi <= 50 ? 'good' : aqi <= 100 ? 'moderate' : 'unhealthy');
+const DAY_LABELS = ['Today', 'Tomorrow', '+2 days'];
+
+function forecastStaleness(fetchedAt) {
+  if (!fetchedAt) return { cls: '', text: 'No forecast data yet' };
+  const mins = Math.round((Date.now() - fetchedAt) / 60000);
+  const off = !navigator.onLine ? ' · offline' : '';
+  if (mins < 60) return { cls: 'green', text: `Forecast updated ${mins} min ago${off}` };
+  const hrs = Math.round(mins / 60);
+  if (hrs < 4) return { cls: 'green', text: `Forecast updated ${hrs} h ago${off}` };
+  if (hrs < 12) return { cls: 'amber', text: `Forecast updated ${hrs} h ago${off}` };
+  return { cls: 'red', text: `Forecast STALE — ${hrs} h old${off}` };
+}
+
+function renderForecast(cached, fixMi, routeMiles, isLoop) {
+  const s = forecastStaleness(cached?.fetchedAt);
+  const statusEl = $('status');
+  statusEl.className = s.cls;
+  $('status-text').textContent = s.text;
+
+  const grid = cached?.grid;
+  const strip = $('forecast-strip');
+  if (!grid) {
+    strip.innerHTML = '<div class="fc-card">No forecast data yet</div>';
+  } else {
+    const currentMi = fixMi ?? 0;
+    const cache = Geo.getFix('trip');
+    const pace = Geo.paceEstimate(cache);
+    strip.innerHTML = [0, 1, 2].map((daysAhead) => {
+      const projMi = Forecast.projectPosition(Geo, currentMi, pace, daysAhead, routeMiles, isLoop);
+      const sample = Forecast.nearestSample(grid, projMi);
+      const day = sample?.days?.[daysAhead];
+      if (!day) return `<div class="fc-card"><div class="fc-day">${DAY_LABELS[daysAhead]}</div>—</div>`;
+      const aqiCls = AQI_LABEL(day.aqi);
+      return `<div class="fc-card">
+        <div class="fc-day">${DAY_LABELS[daysAhead]}</div>
+        <div class="fc-temps">${Math.round(day.hiF)}° <span class="lo">${Math.round(day.loF)}°</span></div>
+        <div class="fc-precip">${day.precipPct != null ? day.precipPct + '% precip' : ''}</div>
+        <div class="fc-aqi ${aqiCls}">${day.aqi != null ? 'AQI ' + Math.round(day.aqi) : ''}</div>
+        <div class="fc-mile">mile ${projMi.toFixed(0)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  const nws = cached?.nws;
+  const alertsBanner = $('alerts-banner');
+  if (nws?.alerts?.length) {
+    alertsBanner.classList.add('shown');
+    alertsBanner.innerHTML = nws.alerts.map((a) =>
+      `<div class="alert-row"><span class="alert-event">${escapeHtml(a.event)}</span> — ${escapeHtml(a.headline || '')}</div>`
+    ).join('');
+  } else {
+    alertsBanner.classList.remove('shown');
+    alertsBanner.innerHTML = '';
+  }
+
+  const narrativeEl = $('nws-narrative');
+  narrativeEl.textContent = nws?.narrative?.[0]?.detailedForecast || '';
+
+  const discussionText = $('nws-discussion-text');
+  discussionText.textContent = nws?.discussion?.text || 'No discussion available.';
+}
+
 // ------------------------------------------------------------------ boot
 
 async function main() {
@@ -161,6 +227,18 @@ async function main() {
     profile.setFix({ mi: snapped.mi, eleFt: Geo.elevationAt(snapped.mi) });
     updateStrips(profile, features, lastFixMi);
   } catch { /* no fix available — fine */ }
+
+  // Forecast: render whatever's cached immediately (works offline), then
+  // refresh in the background — same "show the age, don't hide behind a
+  // spinner" posture as WHW's weather. A failed refresh still leaves the
+  // last-known data on screen with its real age, per forecastStaleness().
+  const cachedForecast = Forecast.readCache(active.meta.id);
+  renderForecast(cachedForecast, lastFixMi, active.ROUTE_MILES, active.ROUTE_IS_LOOP);
+  if (navigator.onLine) {
+    Forecast.refresh(active.meta.id, Geo, active.ROUTE_MILES)
+      .then((fresh) => renderForecast(fresh, lastFixMi, active.ROUTE_MILES, active.ROUTE_IS_LOOP))
+      .catch((e) => console.error('forecast refresh failed', e));
+  }
 
   // Service worker: offline shell + cached basemap once those exist.
   if ('serviceWorker' in navigator) {

@@ -312,6 +312,26 @@ export function elevationAt(mi) {
   return last.eleFt;
 }
 
+// Real-world lat/lon at an arbitrary trail mile, interpolated the same way
+// as elevationAt. Needed to turn a trail mile into something a weather API
+// can be asked about — forecast.js uses this to place sample points and to
+// project where a hiker will be in 1-3 days.
+export function latLonAt(mi) {
+  if (mi <= ROUTE[2]) { const p = pointAt(0); return { lat: p.lat, lon: p.lon }; }
+  const last = pointAt(routeLen - 1);
+  if (mi >= last.mi) return { lat: last.lat, lon: last.lon };
+  for (let i = 0; i < routeLen - 1; i++) {
+    const a = pointAt(i);
+    const b = pointAt(i + 1);
+    if (mi >= a.mi && mi <= b.mi) {
+      const span = b.mi - a.mi;
+      const u = span > 0 ? (mi - a.mi) / span : 0;
+      return { lat: a.lat + (b.lat - a.lat) * u, lon: a.lon + (b.lon - a.lon) * u };
+    }
+  }
+  return { lat: last.lat, lon: last.lon };
+}
+
 // The elevation profile between two trail miles, as { mi, eleFt } samples.
 // Both endpoints are interpolated exactly rather than snapped to the
 // nearest route point, so a drawn area closes flush against the plot's
