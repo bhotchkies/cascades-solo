@@ -94,11 +94,13 @@ header.top .route-name { font-size: 12px; color: var(--ink-mute); }
 }
 #next-strip .cell {
   background: var(--ground); padding: 9px 10px;
-  display: flex; flex-direction: column; gap: 2px;
+  display: flex; flex-direction: column; gap: 4px;
 }
 #next-strip .label { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mute); }
-#next-strip .value { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
-#next-strip .sub { font-size: 11px; color: var(--ink-mute); }
+#next-strip .entry { display: flex; flex-direction: column; }
+#next-strip .value { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+#next-strip .entry:nth-child(2) .value { font-size: 12px; font-weight: 600; color: var(--ink-mute); }
+#next-strip .sub { font-size: 10.5px; color: var(--ink-mute); }
 
 /* ---- climb readout for the visible window */
 #climb-strip {
@@ -196,18 +198,15 @@ footer.foot {
 <div id="next-strip">
   <div class="cell">
     <span class="label">Next water</span>
-    <span class="value" id="next-water">—</span>
-    <span class="sub" id="next-water-sub"></span>
+    <div id="next-water"></div>
   </div>
   <div class="cell">
     <span class="label">Next camp</span>
-    <span class="value" id="next-camp">—</span>
-    <span class="sub" id="next-camp-sub"></span>
+    <div id="next-camp"></div>
   </div>
   <div class="cell">
     <span class="label">Next junction</span>
-    <span class="value" id="next-junction">—</span>
-    <span class="sub" id="next-junction-sub"></span>
+    <div id="next-junction"></div>
   </div>
 </div>
 

@@ -59,32 +59,44 @@ function closeSheet() {
 
 // -------------------------------------------------------------- strips
 
-// Nearest feature of `kind` AHEAD of `fromMi`, walking forward (wrapping on
-// a loop) — this is the number "how far to the next X" actually wants, not
-// the geometrically nearest instance of that kind regardless of direction.
-function nextAhead(features, kind, fromMi) {
-  let best = null;
-  let bestDist = Infinity;
+// The N nearest features of `kind` AHEAD of `fromMi`, walking forward
+// (wrapping on a loop) and sorted by distance — this is what "how far to
+// the next couple of X" actually wants, not the single geometrically
+// nearest instance regardless of direction.
+function nextNAhead(features, kind, fromMi, n) {
+  const hits = [];
   for (const f of features) {
     if (f.kind !== kind) continue;
     const d = Geo.aheadDistance(fromMi, f.mi);
-    if (d != null && d < bestDist) { bestDist = d; best = f; }
+    if (d != null) hits.push({ feature: f, distMi: d });
   }
-  return best ? { feature: best, distMi: bestDist } : null;
+  hits.sort((a, b) => a.distMi - b.distMi);
+  return hits.slice(0, n);
+}
+
+function renderEntries(cellId, hits, emptyLabel) {
+  const cell = $(cellId);
+  if (!hits.length) {
+    cell.innerHTML = `<div class="entry"><span class="value">—</span><span class="sub">${emptyLabel}</span></div>`;
+    return;
+  }
+  cell.innerHTML = hits.map((h) => {
+    const sub = h.feature.name ? escapeHtml(h.feature.name) : '';
+    return `<div class="entry"><span class="value">${Geo.milesStr(h.distMi)}</span><span class="sub">${sub}</span></div>`;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
 }
 
 function updateStrips(profile, features, fixMi) {
   const fromMi = fixMi ?? profile.viewStart;
-  const rows = [
-    ['water', 'next-water', 'next-water-sub'],
-    ['camp', 'next-camp', 'next-camp-sub'],
-    ['junction', 'next-junction', 'next-junction-sub'],
-  ];
-  for (const [kind, valId, subId] of rows) {
-    const hit = nextAhead(features, kind, fromMi);
-    $(valId).textContent = hit ? Geo.milesStr(hit.distMi) : '—';
-    $(subId).textContent = hit && hit.feature.name ? hit.feature.name : (features.length ? '' : 'no data yet');
-  }
+  const emptyLabel = features.length ? '' : 'no data yet';
+
+  renderEntries('next-water', nextNAhead(features, 'water', fromMi, 2), emptyLabel);
+  renderEntries('next-camp', nextNAhead(features, 'camp', fromMi, 2), emptyLabel);
+  renderEntries('next-junction', nextNAhead(features, 'junction', fromMi, 1), emptyLabel);
 
   // Climb readout for the current view window.
   const gainFt = Math.max(0, Geo.ascentAt(profile.viewEnd) - Geo.ascentAt(profile.viewStart));
