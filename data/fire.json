@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-10T18:54:00.815Z",
+ "generatedAt": "2026-08-10T19:56:22.047Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -9,7 +9,15 @@
    ]
   },
   "snoqualmie": {
-   "perimeters": [],
+   "perimeters": [
+    {
+     "name": "Three Queens",
+     "acres": 2478,
+     "discovered": "2026-07-16T04:28:00.000Z",
+     "cause": "Natural",
+     "nearestMi": 2.3
+    }
+   ],
    "hotspots": [],
    "errors": [
     "hotspots: FIRMS_MAP_KEY not set — register at https://firms.modaps.eosdis.nasa.gov/api/area/ and add it as a repo secret"
