@@ -235,12 +235,17 @@ const M_PER_MILE = 1609.344;
 const OFF_TRAIL_NOISE_M = 0.25 * M_PER_MILE;
 const AUTO_CENTER_MAX_MI = 2;
 
+// Must match the --marker-* / --trail-line custom properties in index.html —
+// MapLibre's style JSON can't read CSS variables the way profile.js's
+// inline SVG can, so these are kept as literal hex, numerically identical
+// to the CSS values, so a marker means the same color in both views.
 const KIND_COLOR = {
-  water: '#5FA8C9',
-  camp: '#7FB88A',
-  junction: 'rgba(237,239,230,.7)',
-  bailout: '#D8674F',
+  water: '#4FC3F7',
+  camp: '#5FD87F',
+  junction: '#C77DFF',
+  bailout: '#FF6B4A',
 };
+const TRAIL_LINE_COLOR = '#FF3EA5';
 
 function trailLineGeoJSON(route, stride) {
   const coords = [];
@@ -298,9 +303,19 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
   await new Promise((resolve) => {
     map.on('load', () => {
       map.addSource('csolo-trail', { type: 'geojson', data: trailLineGeoJSON(route.ROUTE, route.ROUTE_STRIDE) });
+      // Dark casing underneath + bright magenta on top — a single mid-tone
+      // line (the original #7FB88A green) was nearly invisible against the
+      // basemap's own green forest fill and green dashed trail symbol.
+      // Magenta doesn't occur anywhere in the USGS topo palette (browns,
+      // greens, blues, black), so it reads at a glance regardless of what
+      // terrain it crosses.
+      map.addLayer({
+        id: 'trail-line-casing', type: 'line', source: 'csolo-trail',
+        paint: { 'line-color': '#1B1F1C', 'line-width': 6, 'line-opacity': 0.7 },
+      });
       map.addLayer({
         id: 'trail-line', type: 'line', source: 'csolo-trail',
-        paint: { 'line-color': '#7FB88A', 'line-width': 3, 'line-opacity': 0.85 },
+        paint: { 'line-color': TRAIL_LINE_COLOR, 'line-width': 3 },
       });
 
       map.addSource(FEATURES_SOURCE, { type: 'geojson', data: featuresGeoJSON(geo, features) });

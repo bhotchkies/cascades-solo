@@ -39,10 +39,10 @@ const TARGET_VGRIDLINES = 5;
 // properties directly in the presentation attribute works because this SVG
 // is inline in the same document that defines them on :root.
 const KIND_STYLE = {
-  water: { fill: 'var(--water)', r: 5 },
-  camp: { fill: 'var(--accent)', r: 5 },
-  junction: { fill: 'var(--ink-mute)', r: 4 },
-  bailout: { fill: 'var(--red)', r: 5 },
+  water: { fill: 'var(--marker-water)', r: 5 },
+  camp: { fill: 'var(--marker-camp)', r: 5 },
+  junction: { fill: 'var(--marker-junction)', r: 4 },
+  bailout: { fill: 'var(--marker-bailout)', r: 5 },
   target: { fill: 'var(--amber)', r: 5.5 },
 };
 

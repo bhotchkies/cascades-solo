@@ -15,27 +15,9 @@
  },
  {
   "kind": "bailout",
-  "mi": 0,
-  "name": "White Pass Trailhead North",
-  "note": "Trailhead"
- },
- {
-  "kind": "bailout",
-  "mi": 0,
-  "name": "US 12",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 0.025,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 0.048,
-  "name": "White Pass Trailhead South",
-  "note": "Trailhead"
+  "mi": 0.018,
+  "name": "White Pass Trailhead North / US 12 / Road crossing / White Pass Trailhead South",
+  "note": "Trailhead / road access"
  },
  {
   "kind": "camp",
@@ -69,7 +51,7 @@
  },
  {
   "kind": "junction",
-  "mi": 2.226,
+  "mi": 2.233,
   "name": "Round Mountain Trail #1140 / Pacific Crest Trail",
   "note": null
  },
@@ -144,12 +126,6 @@
   "lastReported": "2026-08-10"
  },
  {
-  "kind": "junction",
-  "mi": 7.913,
-  "name": null,
-  "note": null
- },
- {
   "kind": "water",
   "mi": 8.298,
   "name": "Water",
@@ -215,7 +191,7 @@
  },
  {
   "kind": "junction",
-  "mi": 11.159,
+  "mi": 11.163,
   "name": "Clear Fork Trail #61 / North Fork Tieton Trail #1118",
   "note": null
  },
@@ -286,12 +262,6 @@
   "note": null,
   "count": 1,
   "lastReported": "2019-09-22"
- },
- {
-  "kind": "junction",
-  "mi": 14.112,
-  "name": null,
-  "note": null
  },
  {
   "kind": "water",
@@ -376,18 +346,6 @@
   "note": null
  },
  {
-  "kind": "junction",
-  "mi": 17.818,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 18.014,
-  "name": null,
-  "note": null
- },
- {
   "kind": "camp",
   "mi": 18.019,
   "name": "Campsite W Windbreak",
@@ -413,12 +371,6 @@
  },
  {
   "kind": "junction",
-  "mi": 18.513,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
   "mi": 18.594,
   "name": "Pacific Crest Trail",
   "note": null
@@ -430,42 +382,6 @@
   "note": null,
   "count": 1,
   "lastReported": "2023-08-28"
- },
- {
-  "kind": "junction",
-  "mi": 18.656,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 18.722,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 18.806,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 18.858,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 19.008,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 19.07,
-  "name": null,
-  "note": null
  },
  {
   "kind": "junction",
@@ -490,36 +406,12 @@
   "lastReported": "2023-08-18"
  },
  {
-  "kind": "junction",
-  "mi": 19.321,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 19.439,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 19.493,
-  "name": null,
-  "note": null
- },
- {
   "kind": "water",
   "mi": 19.496,
   "name": "Spring",
   "note": "6 miles",
   "count": 6,
   "lastReported": "2025-08-17"
- },
- {
-  "kind": "junction",
-  "mi": 19.634,
-  "name": null,
-  "note": null
  },
  {
   "kind": "camp",
@@ -548,12 +440,6 @@
   "note": "Good campsite with many sites.  Fairly buggy, Good access to water.",
   "count": 5,
   "lastReported": "2024-07-12"
- },
- {
-  "kind": "junction",
-  "mi": 20.906,
-  "name": null,
-  "note": null
  },
  {
   "kind": "water",
@@ -596,12 +482,6 @@
   "lastReported": "2025-08-07"
  },
  {
-  "kind": "junction",
-  "mi": 21.83,
-  "name": null,
-  "note": null
- },
- {
   "kind": "camp",
   "mi": 21.858,
   "name": "Cispus camp",
@@ -625,7 +505,7 @@
  },
  {
   "kind": "junction",
-  "mi": 23.333,
+  "mi": 23.341,
   "name": "Pacific Crest Trail",
   "note": null
  },
@@ -668,12 +548,6 @@
   "lastReported": "2021-05-23"
  },
  {
-  "kind": "junction",
-  "mi": 24.857,
-  "name": null,
-  "note": null
- },
- {
   "kind": "water",
   "mi": 24.876,
   "name": "Water",
@@ -688,12 +562,6 @@
   "note": "Camp #2 - Day 3 - Somewhere with dope views, maybe around Sheep Lake?",
   "count": 32,
   "lastReported": "2025-09-30"
- },
- {
-  "kind": "junction",
-  "mi": 24.947,
-  "name": null,
-  "note": null
  },
  {
   "kind": "junction",
@@ -716,18 +584,6 @@
   "note": null,
   "count": 3,
   "lastReported": "2023-07-01"
- },
- {
-  "kind": "junction",
-  "mi": 26.16,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 26.868,
-  "name": null,
-  "note": null
  },
  {
   "kind": "camp",
@@ -770,18 +626,6 @@
   "note": null
  },
  {
-  "kind": "bailout",
-  "mi": 29.238,
-  "name": "Walupt Lake Trailhead",
-  "note": "Trailhead"
- },
- {
-  "kind": "bailout",
-  "mi": 29.262,
-  "name": "Walupt Lake Road",
-  "note": "Road crossing"
- },
- {
   "kind": "camp",
   "mi": 29.296,
   "name": "Camp 1 Option",
@@ -791,15 +635,9 @@
  },
  {
   "kind": "bailout",
-  "mi": 29.353,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 29.405,
-  "name": "Walupt Lake Road",
-  "note": "Road crossing"
+  "mi": 29.36,
+  "name": "Walupt Lake Trailhead / Walupt Lake Road / Road crossing",
+  "note": "Trailhead / road access"
  },
  {
   "kind": "junction",
@@ -809,21 +647,9 @@
  },
  {
   "kind": "bailout",
-  "mi": 29.482,
-  "name": "Walupt Lake Road",
-  "note": "Road crossing"
- },
- {
-  "kind": "junction",
-  "mi": 29.606,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "bailout",
   "mi": 29.892,
   "name": "Walupt Lake Road",
-  "note": "Road crossing"
+  "note": "Trailhead / road access"
  },
  {
   "kind": "water",
@@ -835,27 +661,15 @@
  },
  {
   "kind": "junction",
-  "mi": 30.151,
+  "mi": 30.167,
   "name": "Walupt Horse Trail",
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 30.207,
-  "name": null,
   "note": null
  },
  {
   "kind": "bailout",
   "mi": 30.251,
   "name": "Walupt Lake Horse Camp Road",
-  "note": "Road crossing"
- },
- {
-  "kind": "junction",
-  "mi": 30.368,
-  "name": null,
-  "note": null
+  "note": "Trailhead / road access"
  },
  {
   "kind": "junction",
@@ -871,21 +685,9 @@
  },
  {
   "kind": "bailout",
-  "mi": 30.861,
-  "name": "Coleman Weedpatch Trailhead",
-  "note": "Trailhead"
- },
- {
-  "kind": "bailout",
   "mi": 30.868,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 30.876,
-  "name": "Walupt Lake Road",
-  "note": "Road crossing"
+  "name": "Coleman Weedpatch Trailhead / Road crossing / Walupt Lake Road",
+  "note": "Trailhead / road access"
  },
  {
   "kind": "junction",
@@ -915,7 +717,7 @@
  },
  {
   "kind": "junction",
-  "mi": 32.803,
+  "mi": 32.817,
   "name": "End Road / Klickitat Loop Trail",
   "note": null
  },
@@ -941,12 +743,6 @@
   "kind": "junction",
   "mi": 33.968,
   "name": "Klickitat Loop Trail/Old Chambers Road",
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 34.136,
-  "name": null,
   "note": null
  },
  {
@@ -977,43 +773,19 @@
   "kind": "bailout",
   "mi": 34.984,
   "name": "Chambers Lake Road",
-  "note": "Road crossing"
+  "note": "Trailhead / road access"
  },
  {
   "kind": "bailout",
-  "mi": 35.141,
-  "name": "Chambers Lake Road",
-  "note": "Road crossing"
+  "mi": 35.243,
+  "name": "Chambers Lake Road / Berry Patch Road / Hikers Road / Snowgrass Hikers' Trailhead",
+  "note": "Trailhead / road access"
  },
  {
   "kind": "bailout",
-  "mi": 35.178,
-  "name": "Berry Patch Road",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 35.227,
-  "name": "Hikers Road",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 35.277,
-  "name": "Snowgrass Hikers' Trailhead",
-  "note": "Trailhead"
- },
- {
-  "kind": "bailout",
-  "mi": 35.386,
-  "name": "Berry Patch Road",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 35.588,
-  "name": "Berry Patch Road",
-  "note": "Road crossing"
+  "mi": 35.594,
+  "name": "Berry Patch Road / Berry Patch Trailhead",
+  "note": "Trailhead / road access"
  },
  {
   "kind": "camp",
@@ -1022,12 +794,6 @@
   "note": "dispersed camping with pit toilet",
   "count": 1,
   "lastReported": "2020-07-30"
- },
- {
-  "kind": "bailout",
-  "mi": 35.598,
-  "name": "Berry Patch Trailhead",
-  "note": "Trailhead"
  },
  {
   "kind": "junction",
@@ -1073,7 +839,7 @@
  },
  {
   "kind": "junction",
-  "mi": 37.818,
+  "mi": 37.822,
   "name": "Jordan Creek Trail #94 / Goat Ridge Trail #95",
   "note": null
  },
@@ -1126,12 +892,6 @@
   "lastReported": "2023-08-10"
  },
  {
-  "kind": "junction",
-  "mi": 39.59,
-  "name": null,
-  "note": null
- },
- {
   "kind": "water",
   "mi": 39.633,
   "name": "Jordan Creek",
@@ -1146,12 +906,6 @@
   "note": "Lots of places to set up tents; on a stream; great views",
   "count": 23,
   "lastReported": "2026-08-03"
- },
- {
-  "kind": "junction",
-  "mi": 39.646,
-  "name": null,
-  "note": null
  },
  {
   "kind": "junction",
@@ -1174,12 +928,6 @@
   "note": null
  },
  {
-  "kind": "junction",
-  "mi": 40.677,
-  "name": null,
-  "note": null
- },
- {
   "kind": "camp",
   "mi": 40.72,
   "name": "Campsite!",
@@ -1188,36 +936,12 @@
   "lastReported": "2026-08-10"
  },
  {
-  "kind": "junction",
-  "mi": 40.738,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 40.8,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 40.858,
-  "name": null,
-  "note": null
- },
- {
   "kind": "water",
   "mi": 40.86,
   "name": "Water",
   "note": "Water",
   "count": 3,
   "lastReported": "2023-07-01"
- },
- {
-  "kind": "junction",
-  "mi": 40.919,
-  "name": null,
-  "note": null
  },
  {
   "kind": "junction",
@@ -1249,7 +973,7 @@
  },
  {
   "kind": "junction",
-  "mi": 41.499,
+  "mi": 41.505,
   "name": "Packwood Glacier Trail",
   "note": null
  },
@@ -1270,24 +994,12 @@
   "lastReported": "2023-08-18"
  },
  {
-  "kind": "junction",
-  "mi": 41.726,
-  "name": null,
-  "note": null
- },
- {
   "kind": "camp",
   "mi": 41.779,
   "name": "End of day 1",
   "note": "Campground",
   "count": 1,
   "lastReported": "2024-07-28"
- },
- {
-  "kind": "junction",
-  "mi": 41.89,
-  "name": null,
-  "note": null
  },
  {
   "kind": "camp",

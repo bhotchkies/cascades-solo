@@ -265,11 +265,45 @@ function runDiverges(offsets, run) {
   return divergesBefore || divergesAfter;
 }
 
+// Generic along-trail clustering, same idea as clusterWaypoints() above but
+// for named {mi, name} candidates rather than raw waypoint rows — collapses
+// anything within thresholdMi of its neighbor into one entry regardless of
+// whether the names match exactly, since a real trailhead hub commonly has
+// a trailhead node, an access road, AND a parking-area path all touching
+// the route within a few hundred feet, and that is one bail-out point to a
+// hiker, not three.
+function clusterByMile(candidates, thresholdMi) {
+  const sorted = [...candidates].sort((a, b) => a.mi - b.mi);
+  const clusters = [];
+  for (const c of sorted) {
+    const last = clusters[clusters.length - 1];
+    if (last && c.mi - last.mis[last.mis.length - 1] <= thresholdMi) {
+      last.mis.push(c.mi);
+      if (c.name && !last.names.includes(c.name)) last.names.push(c.name);
+    } else {
+      clusters.push({ mis: [c.mi], names: c.name ? [c.name] : [] });
+    }
+  }
+  return clusters.map((cl) => ({
+    mi: cl.mis.reduce((s, m) => s + m, 0) / cl.mis.length,
+    name: cl.names.length ? cl.names.join(' / ') : null,
+  }));
+}
+
 function junctionsFromPaths(routeIndex, ways) {
   const candidates = [];
   for (const way of ways) {
     if (!way.geometry || way.geometry.length < 2) continue;
+    // Named ways only. Unnamed OSM "path" ways near a popular access point
+    // (Walupt Lake, Snowgrass Flats — both frontcountry-adjacent) are
+    // overwhelmingly campsite spurs, viewpoint social trails, or fire-ring
+    // access, not the kind of fork a hiker means by "junction". A real
+    // trail junction is almost always a named trail in OSM (Nannie Ridge
+    // Trail, Shoe Lake Trail, etc). Dropping unnamed ways cost some true
+    // positives (an occasional named-but-untagged spur) but removed a much
+    // larger set of false ones clustered at trailheads.
     const wayName = way.tags && way.tags.name ? way.tags.name : null;
+    if (!wayName) continue;
     const offsets = way.geometry.map((pt) => routeIndex.nearest(pt.lat, pt.lon));
     const runs = findTouchRuns(offsets, JUNCTION_MAX_OFFSET_M);
     for (const run of runs) {
@@ -279,59 +313,48 @@ function junctionsFromPaths(routeIndex, ways) {
       candidates.push({ mi: sum / (run.end - run.start + 1), name: wayName });
     }
   }
-  candidates.sort((a, b) => a.mi - b.mi);
-
-  const merged = [];
-  for (const c of candidates) {
-    const last = merged[merged.length - 1];
-    if (last && c.mi - last.mi <= JUNCTION_MERGE_MI) {
-      if (c.name && !last.names.includes(c.name)) last.names.push(c.name);
-    } else {
-      merged.push({ mi: c.mi, names: c.name ? [c.name] : [] });
-    }
-  }
-  return merged.map((m) => ({
-    kind: 'junction',
-    mi: m.mi,
-    name: m.names.length ? m.names.join(' / ') : null,
-    note: null,
+  return clusterByMile(candidates, JUNCTION_MERGE_MI).map((c) => ({
+    kind: 'junction', mi: c.mi, name: c.name, note: null,
   }));
 }
 
 // -------------------------------------------------------------------- bailouts
 
 function bailoutsFromRoadsAndTrailheads(routeIndex, elements) {
-  const out = [];
+  const candidates = [];
 
   for (const el of elements) {
     if (el.type === 'node' && el.tags && el.tags.highway === 'trailhead') {
       const cand = routeIndex.nearest(el.lat, el.lon);
       if (cand.offM <= TRAILHEAD_MAX_OFFSET_M) {
-        out.push({ kind: 'bailout', mi: cand.mi, name: el.tags.name || 'Trailhead', note: 'Trailhead' });
+        candidates.push({ mi: cand.mi, name: el.tags.name || 'Trailhead' });
       }
       continue;
     }
     if (el.type === 'way' && el.geometry && el.geometry.length >= 2) {
-      // One bail-out per contiguous touch run, not one per vertex — a road
+      // One candidate per contiguous touch run, not one per vertex — a road
       // that stays within range for several OSM vertices (dense digitizing
       // near an access point) is a single real crossing, not several.
+      // Final clustering below then merges these with any nearby trailhead
+      // node into one hub.
       const roadName = el.tags && el.tags.name ? el.tags.name : (el.tags && el.tags.ref) || 'Road crossing';
       const offsets = el.geometry.map((pt) => routeIndex.nearest(pt.lat, pt.lon));
       for (const run of findTouchRuns(offsets, JUNCTION_MAX_OFFSET_M)) {
         let sum = 0;
         for (let k = run.start; k <= run.end; k++) sum += offsets[k].mi;
-        out.push({ kind: 'bailout', mi: sum / (run.end - run.start + 1), name: roadName, note: 'Road crossing' });
+        candidates.push({ mi: sum / (run.end - run.start + 1), name: roadName });
       }
     }
   }
 
-  out.sort((a, b) => a.mi - b.mi);
-  const merged = [];
-  for (const b of out) {
-    const last = merged[merged.length - 1];
-    if (last && b.mi - last.mi <= JUNCTION_MERGE_MI && last.name === b.name) continue;
-    merged.push(b);
-  }
+  // Wider than JUNCTION_MERGE_MI — a trailhead's various features (parking
+  // access road, the trailhead node itself, a short connector) legitimately
+  // spread across a couple hundred feet, and a hiker cares about "there's a
+  // way out here" as one fact, not each contributing OSM element.
+  const BAILOUT_MERGE_MI = 0.15;
+  const merged = clusterByMile(candidates, BAILOUT_MERGE_MI).map((c) => ({
+    kind: 'bailout', mi: c.mi, name: c.name, note: 'Trailhead / road access',
+  }));
   return merged;
 }
 

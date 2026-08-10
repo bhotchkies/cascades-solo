@@ -1,21 +1,15 @@
 [
  {
   "kind": "junction",
-  "mi": 0,
+  "mi": 0.01,
   "name": "Snoqualmie Mountain Trail",
   "note": null
  },
  {
   "kind": "bailout",
-  "mi": 0.021,
-  "name": "Snow Lake Trailhead",
-  "note": "Trailhead"
- },
- {
-  "kind": "bailout",
-  "mi": 0.023,
-  "name": "National Forest Development Road 9040",
-  "note": "Road crossing"
+  "mi": 0.022,
+  "name": "Snow Lake Trailhead / National Forest Development Road 9040",
+  "note": "Trailhead / road access"
  },
  {
   "kind": "junction",
@@ -52,30 +46,12 @@
   "note": null
  },
  {
-  "kind": "junction",
-  "mi": 2.391,
-  "name": null,
-  "note": null
- },
- {
   "kind": "camp",
   "mi": 2.662,
   "name": "another secret campground",
   "note": "also dope ",
   "count": 1,
   "lastReported": "2025-08-07"
- },
- {
-  "kind": "junction",
-  "mi": 2.869,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 2.923,
-  "name": null,
-  "note": null
  },
  {
   "kind": "water",
@@ -95,14 +71,8 @@
  },
  {
   "kind": "junction",
-  "mi": 3.08,
+  "mi": 3.105,
   "name": "Snow Lake Trail",
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 3.312,
-  "name": null,
   "note": null
  },
  {
@@ -168,12 +138,6 @@
   "note": null
  },
  {
-  "kind": "junction",
-  "mi": 9.152,
-  "name": null,
-  "note": null
- },
- {
   "kind": "camp",
   "mi": 9.181,
   "name": "Caretaker Cabin",
@@ -191,7 +155,7 @@
  },
  {
   "kind": "junction",
-  "mi": 9.454,
+  "mi": 9.474,
   "name": "Goldmyer Hot Springs Trail / Middle Fork Tie #4 Trail",
   "note": null
  },
@@ -232,12 +196,6 @@
   "note": null
  },
  {
-  "kind": "junction",
-  "mi": 12.616,
-  "name": null,
-  "note": null
- },
- {
   "kind": "camp",
   "mi": 12.645,
   "name": "Hardscrabble horse camp",
@@ -247,13 +205,7 @@
  },
  {
   "kind": "junction",
-  "mi": 12.671,
-  "name": "Dutch Miller Gap Trail",
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 12.754,
+  "mi": 12.73,
   "name": "Dutch Miller Gap Trail",
   "note": null
  },
@@ -327,7 +279,7 @@
  },
  {
   "kind": "junction",
-  "mi": 18.755,
+  "mi": 18.778,
   "name": "Williams Lake Trail / Dutch Miller Gap Trail",
   "note": null
  },
@@ -355,7 +307,7 @@
  },
  {
   "kind": "junction",
-  "mi": 20.199,
+  "mi": 20.248,
   "name": "Lake Ivanhoe Trail",
   "note": null
  },
@@ -409,7 +361,7 @@
   "kind": "bailout",
   "mi": 23.184,
   "name": "National Forest Development Road 9040",
-  "note": "Road crossing"
+  "note": "Trailhead / road access"
  },
  {
   "kind": "water",
@@ -504,12 +456,6 @@
   "lastReported": "2023-07-25"
  },
  {
-  "kind": "junction",
-  "mi": 30.004,
-  "name": null,
-  "note": null
- },
- {
   "kind": "camp",
   "mi": 30.122,
   "name": "Camp 2nd night?",
@@ -532,12 +478,6 @@
   "note": "Get as much water here as you can",
   "count": 3,
   "lastReported": "2023-07-25"
- },
- {
-  "kind": "junction",
-  "mi": 30.905,
-  "name": null,
-  "note": null
  },
  {
   "kind": "camp",
@@ -582,12 +522,6 @@
   "note": "two forested sites right off the trail, room for one tent each and a creek just a few feet away. ",
   "count": 1,
   "lastReported": "2023-08-01"
- },
- {
-  "kind": "junction",
-  "mi": 36.323,
-  "name": null,
-  "note": null
  },
  {
   "kind": "camp",
@@ -756,12 +690,6 @@
   "lastReported": "2022-04-10"
  },
  {
-  "kind": "junction",
-  "mi": 43.12,
-  "name": "Mineral Creek Trail",
-  "note": null
- },
- {
   "kind": "camp",
   "mi": 43.151,
   "name": "Small Park Lakes Camp",
@@ -770,18 +698,18 @@
   "lastReported": "2025-09-02"
  },
  {
+  "kind": "junction",
+  "mi": 43.16,
+  "name": "Mineral Creek Trail",
+  "note": null
+ },
+ {
   "kind": "camp",
   "mi": 43.689,
   "name": "Established stock and hiker camps",
   "note": null,
   "count": 4,
   "lastReported": "2023-07-25"
- },
- {
-  "kind": "junction",
-  "mi": 43.815,
-  "name": null,
-  "note": null
  },
  {
   "kind": "water",
@@ -806,18 +734,6 @@
   "note": "Camping with a view and water most likely available but could be dry during late-season drought year.",
   "count": 2,
   "lastReported": "2025-08-21"
- },
- {
-  "kind": "junction",
-  "mi": 47.137,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 47.219,
-  "name": null,
-  "note": null
  },
  {
   "kind": "camp",
@@ -892,12 +808,6 @@
   "lastReported": "2021-07-12"
  },
  {
-  "kind": "junction",
-  "mi": 50.736,
-  "name": null,
-  "note": null
- },
- {
   "kind": "camp",
   "mi": 50.77,
   "name": "alternative camp",
@@ -913,20 +823,8 @@
  },
  {
   "kind": "junction",
-  "mi": 51.066,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
   "mi": 51.924,
   "name": "Pacific Crest Trail",
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 52.54,
-  "name": null,
   "note": null
  },
  {
@@ -1042,177 +940,21 @@
   "note": null
  },
  {
-  "kind": "junction",
-  "mi": 56.299,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "junction",
-  "mi": 56.607,
-  "name": null,
-  "note": null
+  "kind": "bailout",
+  "mi": 57.079,
+  "name": "Pacific Crest Trail North - Snoqualmie Pass Trailhead / Road crossing / Erste Strasse / Ober Strasse / Alpental Strasse",
+  "note": "Trailhead / road access"
  },
  {
   "kind": "junction",
-  "mi": 56.769,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "bailout",
-  "mi": 56.816,
-  "name": "Pacific Crest Trail North - Snoqualmie Pass Trailhead",
-  "note": "Trailhead"
- },
- {
-  "kind": "junction",
-  "mi": 56.873,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "bailout",
-  "mi": 56.908,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 56.921,
-  "name": "Erste Strasse",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 56.929,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.032,
-  "name": "Erste Strasse",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.125,
-  "name": "Erste Strasse",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.125,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.128,
-  "name": "Ober Strasse",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.166,
-  "name": "Erste Strasse",
-  "note": "Road crossing"
- },
- {
-  "kind": "junction",
-  "mi": 57.194,
+  "mi": 57.227,
   "name": "Well Access Road, Snoqualmie Pass Utility District",
   "note": null
  },
  {
   "kind": "bailout",
-  "mi": 57.2,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.264,
-  "name": "Alpental Strasse",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.338,
-  "name": "Erste Strasse",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.537,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.538,
-  "name": "Alpental Strasse",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.56,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.57,
-  "name": "National Forest Development Road 9040",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.658,
-  "name": "Alpenrose",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.673,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.718,
-  "name": "National Forest Development Road 9040",
-  "note": "Road crossing"
- },
- {
-  "kind": "junction",
-  "mi": 57.739,
-  "name": null,
-  "note": null
- },
- {
-  "kind": "bailout",
-  "mi": 57.816,
-  "name": "National Forest Development Road 9040",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.839,
-  "name": "Road crossing",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.884,
-  "name": "National Forest Development Road 9040",
-  "note": "Road crossing"
- },
- {
-  "kind": "bailout",
-  "mi": 57.918,
-  "name": "Road crossing",
-  "note": "Road crossing"
+  "mi": 57.73,
+  "name": "Road crossing / Alpental Strasse / National Forest Development Road 9040 / Alpenrose",
+  "note": "Trailhead / road access"
  }
 ]
