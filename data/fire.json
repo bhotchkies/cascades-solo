@@ -1,0 +1,19 @@
+{
+ "generatedAt": "2026-08-10T18:35:37.993Z",
+ "corridors": {
+  "goat-rocks": {
+   "perimeters": [],
+   "hotspots": [],
+   "errors": [
+    "hotspots: FIRMS_MAP_KEY not set — register at https://firms.modaps.eosdis.nasa.gov/api/area/ and add it as a repo secret"
+   ]
+  },
+  "snoqualmie": {
+   "perimeters": [],
+   "hotspots": [],
+   "errors": [
+    "hotspots: FIRMS_MAP_KEY not set — register at https://firms.modaps.eosdis.nasa.gov/api/area/ and add it as a repo secret"
+   ]
+  }
+ }
+}

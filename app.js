@@ -10,6 +10,7 @@ import * as Geo from './geo.js';
 import { ROUTES, getActiveRouteId, setActiveRouteId, routeById, loadActiveRoute } from './routes/index.js';
 import { Profile } from './profile.js';
 import * as Forecast from './forecast.js';
+import * as Fire from './fire.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -174,6 +175,47 @@ function renderForecast(cached, fixMi, routeMiles, isLoop) {
   discussionText.textContent = nws?.discussion?.text || 'No discussion available.';
 }
 
+// ------------------------------------------------------------------- fire
+
+function renderFire(fireData, routeId) {
+  const corridor = fireData?.corridors?.[routeId];
+  const s = Fire.fireStaleness(fireData?.generatedAt);
+  $('fire-status-age').textContent = s.text;
+  $('fire-status-age').style.color = s.cls === 'red' ? 'var(--red)' : s.cls === 'amber' ? 'var(--amber)' : '';
+
+  const list = $('fire-list');
+  if (!corridor) {
+    list.innerHTML = '<div id="fire-none">No fire data yet</div>';
+    return;
+  }
+
+  const rows = [];
+  for (const p of corridor.perimeters || []) {
+    rows.push(`<div class="fire-row">
+      <span><span class="fire-name">${escapeHtml(p.name)}</span>
+        <span class="fire-meta">${p.acres ? p.acres.toLocaleString('en-US') + ' ac' : ''}${p.cause ? ' · ' + escapeHtml(p.cause) : ''}</span></span>
+      <span class="fire-dist">${p.nearestMi} mi</span>
+    </div>`);
+  }
+  const hotspotCount = (corridor.hotspots || []).length;
+  if (hotspotCount) {
+    const nearest = corridor.hotspots[0];
+    rows.push(`<div class="fire-row">
+      <span><span class="fire-name">${hotspotCount} satellite hotspot${hotspotCount === 1 ? '' : 's'} (24h)</span>
+        <span class="fire-meta">nearest ${nearest.confidence || ''} confidence</span></span>
+      <span class="fire-dist">${nearest.nearestMi} mi</span>
+    </div>`);
+  }
+  if (!rows.length) {
+    list.innerHTML = '<div id="fire-none">No active perimeters or hotspots in this corridor</div>';
+  } else {
+    list.innerHTML = rows.join('');
+  }
+  if (corridor.errors?.length) {
+    list.innerHTML += `<div class="fire-meta" style="padding-top:4px">${escapeHtml(corridor.errors.join('; '))}</div>`;
+  }
+}
+
 // ------------------------------------------------------------------ boot
 
 async function main() {
@@ -241,6 +283,15 @@ async function main() {
       .then((fresh) => renderForecast(fresh, lastFixMi, active.ROUTE_MILES, active.ROUTE_IS_LOOP))
       .catch((e) => console.error('forecast refresh failed', e));
   }
+
+  // Fire: data/fire.json is same-origin (no CORS, no API key needed
+  // client-side) and refreshed hourly by .github/workflows/fire.yml. Always
+  // fetched fresh — unlike forecast, there's no rate/cost concern with
+  // refetching a static file on every load, and sw.js excludes /data/ from
+  // its own cache for the same "never look fresher than it is" reason.
+  Fire.fetchFireData()
+    .then((data) => renderFire(data, active.meta.id))
+    .catch((e) => { console.error('fire fetch failed', e); renderFire(null, active.meta.id); });
 
   // Map screen — dynamic import so nobody who never opens it pays for
   // parsing MapLibre. Re-fetched/rebuilt on every open() call rather than

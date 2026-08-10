@@ -1,0 +1,40 @@
+name: Refresh fire data
+
+on:
+  schedule:
+    # Hourly. Ambient information only — nothing in the app gates a
+    # decision on this data, so an hourly cadence is plenty; Watch Duty is
+    # the actual safety layer for anything time-critical.
+    - cron: '0 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Fetch fire data
+        env:
+          # Register a free key at https://firms.modaps.eosdis.nasa.gov/api/area/
+          # and add it as a repo secret. Missing key degrades gracefully —
+          # perimeters still get written, hotspots just don't (see
+          # tools/fetch_fire.js).
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: node tools/fetch_fire.js
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/fire.json
+          git diff --staged --quiet && echo "no changes" && exit 0
+          git commit -m "Refresh fire data ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
+          git push

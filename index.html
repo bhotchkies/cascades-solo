@@ -243,6 +243,18 @@ footer.foot {
   white-space: pre-wrap; font-family: inherit; font-size: 11.5px; color: var(--ink-mute);
   margin-top: 8px; max-height: 240px; overflow-y: auto; line-height: 1.5;
 }
+
+/* ---- fire status: ambient only, never a decision input */
+#fire-section { padding: 10px 14px 4px; border-top: 1px solid var(--rule); }
+#fire-section .section-label { display: flex; justify-content: space-between; align-items: baseline; }
+#fire-status-age { font-size: 10.5px; color: var(--ink-mute); }
+#fire-list { font-size: 12.5px; }
+#fire-list .fire-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--rule); }
+#fire-list .fire-row:last-child { border-bottom: none; }
+#fire-list .fire-name { color: var(--ink); }
+#fire-list .fire-meta { color: var(--ink-mute); font-size: 11px; }
+#fire-list .fire-dist { font-weight: 700; font-variant-numeric: tabular-nums; }
+#fire-none { color: var(--ink-mute); font-size: 12px; padding: 4px 0; }
 </style>
 </head>
 <body>
@@ -313,6 +325,14 @@ footer.foot {
     <summary>NWS forecast discussion</summary>
     <pre id="nws-discussion-text"></pre>
   </details>
+</div>
+
+<div id="fire-section">
+  <div class="section-label">
+    <span class="smallcaps">Fire — ambient only, not a safety source</span>
+    <span id="fire-status-age"></span>
+  </div>
+  <div id="fire-list"></div>
 </div>
 
 <div id="sheet-backdrop"></div>
