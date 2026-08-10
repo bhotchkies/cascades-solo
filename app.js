@@ -259,18 +259,24 @@ async function main() {
   let lastMapFix = null; // { lat, lon, offM, nearLat, nearLon } — what map.js's open()/updateFix() want
   updateStrips(profile, features, lastFixMi);
 
-  // Best-effort one-shot fix. Fails silently on desktop/no-permission — the
-  // profile and strips both work perfectly well with no fix at all, they
-  // just show the view window's start instead of "from where I am".
-  try {
-    const fix = await Geo.locate();
+  // Best-effort one-shot fix. Fire-and-forget, NOT awaited — this used to be
+  // `await`ed inline, which meant a slow or unanswered geolocation
+  // permission prompt (up to the 15s timeout in Geo.locate(), or indefinitely
+  // on desktop if the prompt just sits there) blocked every line of main()
+  // after it, including the map-toggle/map-download/map-back listeners
+  // further down. The map button would look dead until either a fix arrived
+  // or forecast/fire started rendering — which is what actually happened
+  // right before it, making it look like "the map is waiting on weather"
+  // when the real cause was geolocation blocking listener setup entirely.
+  Geo.locate().then((fix) => {
     const snapped = Geo.snapWithProgress(fix.lat, fix.lon);
     Geo.recordFix('trip', fix, snapped);
     lastFixMi = snapped.mi;
     lastMapFix = { lat: fix.lat, lon: fix.lon, offM: snapped.offM, nearLat: snapped.nearLat, nearLon: snapped.nearLon };
     profile.setFix({ mi: snapped.mi, eleFt: Geo.elevationAt(snapped.mi) });
     updateStrips(profile, features, lastFixMi);
-  } catch { /* no fix available — fine */ }
+    renderForecast(Forecast.readCache(active.meta.id), lastFixMi, active.ROUTE_MILES, active.ROUTE_IS_LOOP);
+  }).catch(() => { /* no fix available — profile/strips/map all work fine with none */ });
 
   // Forecast: render whatever's cached immediately (works offline), then
   // refresh in the background — same "show the age, don't hide behind a
