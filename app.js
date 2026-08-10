@@ -93,13 +93,26 @@ function escapeHtml(s) {
   return String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
 }
 
-function updateStrips(profile, features, fixMi) {
+function updateStrips(profile, features, fixMi, dayStart) {
   const fromMi = fixMi ?? profile.viewStart;
   const emptyLabel = features.length ? '' : 'no data yet';
 
-  renderEntries('next-water', nextNAhead(features, 'water', fromMi, 2), emptyLabel);
-  renderEntries('next-camp', nextNAhead(features, 'camp', fromMi, 2), emptyLabel);
-  renderEntries('next-junction', nextNAhead(features, 'junction', fromMi, 1), emptyLabel);
+  // Today's progress: only shown once a real day-start exists (a fix taken
+  // after actually leaving camp — see days.js/geo.js's REBASE_MI). Hidden
+  // rather than showing "0.0 mi" all morning before the first fix, which
+  // would read as "you haven't moved" instead of "no data yet".
+  const todayEl = $('today-strip');
+  if (todayEl) {
+    if (dayStart && fixMi != null && fixMi >= dayStart.mi) {
+      const milesToday = fixMi - dayStart.mi;
+      const gainToday = Math.max(0, Geo.ascentAt(fixMi) - Geo.ascentAt(dayStart.mi));
+      $('today-miles').textContent = `${milesToday.toFixed(1)} mi`;
+      $('today-gain').textContent = Geo.feetStr(gainToday);
+      todayEl.classList.add('shown');
+    } else {
+      todayEl.classList.remove('shown');
+    }
+  }
 
   // Climb readout for the current view window.
   const gainFt = Math.max(0, Geo.ascentAt(profile.viewEnd) - Geo.ascentAt(profile.viewStart));
@@ -368,7 +381,7 @@ async function main() {
     initialView,
     onViewChange: () => {
       $('reset-view').classList.toggle('shown', !profile.isFullView());
-      updateStrips(profile, features, lastFix?.mi ?? null);
+      updateStrips(profile, features, lastFix?.mi ?? null, dayStart);
     },
   });
 
@@ -380,7 +393,7 @@ async function main() {
   $('sheet-close').addEventListener('click', closeSheet);
   $('sheet-backdrop').addEventListener('click', closeSheet);
 
-  updateStrips(profile, features, null);
+  updateStrips(profile, features, null, dayStart);
 
   // Expand/collapse a day card — delegated on the strip container since
   // cards are rebuilt on every render. Reads currentDayData/currentGrid at
@@ -433,7 +446,7 @@ async function main() {
         }
         if (mapController) mapController.updateFixAndFrame(lastFix);
       }
-      updateStrips(profile, features, lastFix?.mi ?? null);
+      updateStrips(profile, features, lastFix?.mi ?? null, dayStart);
       renderForecast(Forecast.readCache(active.meta.id), todayKey, dayStart, lastFix, active.ROUTE_MILES);
       if (!trustworthy) onStatus?.('Fix too far from the trail to trust — showing last known position');
       else onStatus?.(null);
@@ -545,8 +558,26 @@ async function main() {
   });
 
   // Service worker: offline shell + cached basemap once those exist.
+  //
+  // Silent auto-reload on update — the alternative (a "new version
+  // available" banner) requires the hiker to notice and tap it, which is
+  // exactly the kind of friction that let a stale SW/cache linger across a
+  // whole reported-bug cycle last session. skipWaiting()/clients.claim() in
+  // sw.js mean a new SW takes control as soon as it's installed; this just
+  // reloads the page when that happens so the app is never silently running
+  // old code. Guarded against a reload loop with `reloaded`.
   if ('serviceWorker' in navigator) {
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (reloaded) return;
+      reloaded = true;
+      window.location.reload();
+    });
+    navigator.serviceWorker.addEventListener('message', (e) => {
+      if (e.data?.type === 'VERSION') $('app-version').textContent = e.data.version;
+    });
     navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {});
+    navigator.serviceWorker.ready.then((reg) => reg.active?.postMessage('GET_VERSION')).catch(() => {});
   }
 }
 

@@ -15,6 +15,11 @@
 export function buildStyle(sourceId) {
   return {
     version: 8,
+    // Resolved by map.js's 'csologlyphs://' protocol (registered alongside
+    // the pmtiles protocol) to the one vendored Noto Sans range — see
+    // registerGlyphsProtocol() there for why {fontstack}/{range} are
+    // present but ignored.
+    glyphs: 'csologlyphs://fonts/{fontstack}/{range}.pbf',
     sources: {
       [sourceId]: {
         type: 'raster',

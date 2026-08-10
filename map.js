@@ -16,12 +16,16 @@ const STORE = 'archives';
 // The integrity check below only verifies a downloaded archive isn't
 // corrupted — it can't know the *content* is stale, so this is what makes a
 // rebuilt-but-already-downloaded archive show up as "not downloaded" again.
-const ARCHIVE_VERSION = 1;
+const ARCHIVE_VERSION = 2;
 
 const VENDOR_FILES = [
   { name: 'maplibre-js', file: './map/maplibre-gl.js', mime: 'text/javascript' },
   { name: 'maplibre-css', file: './map/maplibre-gl.css', mime: 'text/css' },
   { name: 'pmtiles-js', file: './map/pmtiles.js', mime: 'text/javascript' },
+  // Vendored Noto Sans glyph range for the mile-number labels (map_style.js).
+  // Only ASCII (digits + "mi") is ever drawn, so the single 0-255 range
+  // covers every codepoint the style will ever request.
+  { name: 'glyphs-noto', file: './map/glyphs/Noto Sans Regular/0-255.pbf', mime: 'application/x-protobuf' },
 ];
 
 function tileFileFor(routeId) {
@@ -199,11 +203,31 @@ class BlobSource {
 }
 
 let protocolRegistered = false;
+let glyphsProtocolRegistered = false;
+
+// The vendored font is a single fixed file, so the custom 'csologlyphs://'
+// protocol ignores the {fontstack}/{range} MapLibre substitutes into the
+// request URL and always returns that one file — there's only ever one
+// font and one range in play here, unlike a real font server. Mirrors the
+// pmtiles protocol pattern just below: MapLibre's addProtocol expects a
+// {data} response either way, network or not.
+async function registerGlyphsProtocol() {
+  if (glyphsProtocolRegistered) return;
+  await loadVendor();
+  const maplibregl = window.maplibregl;
+  const record = await idbGet('glyphs-noto');
+  if (!record) throw new Error('glyphs-noto missing — map not downloaded');
+  const bytes = await record.blob.arrayBuffer();
+  maplibregl.addProtocol('csologlyphs', async () => ({ data: bytes }));
+  glyphsProtocolRegistered = true;
+}
 
 async function registerArchive(routeId) {
   await loadVendor();
   const maplibregl = window.maplibregl;
   const pmtiles = window.pmtiles;
+
+  await registerGlyphsProtocol();
 
   if (!protocolRegistered) {
     const protocol = new pmtiles.Protocol();
@@ -230,6 +254,7 @@ async function registerArchive(routeId) {
 const FEATURES_SOURCE = 'csolo-features';
 const POSITION_SOURCE = 'csolo-position';
 const RECOVERY_SOURCE = 'csolo-recovery';
+const MILE_MARKERS_SOURCE = 'csolo-mile-markers';
 
 const M_PER_MILE = 1609.344;
 const OFF_TRAIL_NOISE_M = 0.25 * M_PER_MILE;
@@ -271,6 +296,25 @@ function featuresGeoJSON(geo, features) {
 
 function emptyFC() {
   return { type: 'FeatureCollection', features: [] };
+}
+
+// Absolute trail-mile markers (0, 1, 2… — total distance, not remaining;
+// see index.html's legend/header for the "remaining" numbers this is
+// deliberately NOT). One point per whole mile is cheap enough to just
+// generate outright (a 60 mi route is 60 points) rather than compute per
+// zoom level; "adaptive by zoom" is handled by which of the two layers
+// below is visible, not by how many points exist.
+function mileMarkersGeoJSON(geo, routeMiles) {
+  const features = [];
+  for (let mi = 0; mi <= Math.floor(routeMiles); mi++) {
+    const { lat, lon } = geo.latLonAt(mi);
+    features.push({
+      type: 'Feature',
+      properties: { mile: mi, five: mi % 5 === 0 },
+      geometry: { type: 'Point', coordinates: [lon, lat] },
+    });
+  }
+  return { type: 'FeatureCollection', features };
 }
 
 // ---------------------------------------------------------------------- open
@@ -316,6 +360,52 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
       map.addLayer({
         id: 'trail-line', type: 'line', source: 'csolo-trail',
         paint: { 'line-color': TRAIL_LINE_COLOR, 'line-width': 3 },
+      });
+
+      // Mile markers: two layers over the same source, "adaptive by zoom"
+      // per Blair's call — every-5-miles is always on so the whole-route
+      // view isn't cluttered, every-1-mile only kicks in once zoomed in
+      // far enough that individual numbers wouldn't overlap.
+      map.addSource(MILE_MARKERS_SOURCE, { type: 'geojson', data: mileMarkersGeoJSON(geo, route.ROUTE_MILES) });
+      map.addLayer({
+        id: 'mile-markers-tick-5', type: 'circle', source: MILE_MARKERS_SOURCE,
+        filter: ['==', ['get', 'five'], true],
+        paint: { 'circle-radius': 3.5, 'circle-color': '#EDEFE6', 'circle-stroke-color': '#1B1F1C', 'circle-stroke-width': 1 },
+      });
+      map.addLayer({
+        id: 'mile-markers-tick-1', type: 'circle', source: MILE_MARKERS_SOURCE,
+        minzoom: 13,
+        filter: ['!=', ['get', 'five'], true],
+        paint: { 'circle-radius': 2.5, 'circle-color': '#EDEFE6', 'circle-stroke-color': '#1B1F1C', 'circle-stroke-width': 1 },
+      });
+      map.addLayer({
+        id: 'mile-markers-5', type: 'symbol', source: MILE_MARKERS_SOURCE,
+        filter: ['==', ['get', 'five'], true],
+        layout: {
+          'text-field': ['concat', ['get', 'mile'], ' mi'],
+          'text-font': ['Noto Sans Regular'],
+          'text-size': 11,
+          'text-anchor': 'left',
+          'text-offset': [0.6, 0],
+        },
+        paint: {
+          'text-color': '#EDEFE6', 'text-halo-color': '#1B1F1C', 'text-halo-width': 1.3,
+        },
+      });
+      map.addLayer({
+        id: 'mile-markers-1', type: 'symbol', source: MILE_MARKERS_SOURCE,
+        minzoom: 13,
+        filter: ['!=', ['get', 'five'], true],
+        layout: {
+          'text-field': ['get', 'mile'],
+          'text-font': ['Noto Sans Regular'],
+          'text-size': 10,
+          'text-anchor': 'left',
+          'text-offset': [0.6, 0],
+        },
+        paint: {
+          'text-color': '#EDEFE6', 'text-halo-color': '#1B1F1C', 'text-halo-width': 1.2,
+        },
       });
 
       map.addSource(FEATURES_SOURCE, { type: 'geojson', data: featuresGeoJSON(geo, features) });

@@ -2,7 +2,7 @@
 // Forecast data is NOT cached here — app.js keeps that in localStorage so it can
 // reason about how old it is. The network is always tried first for data.
 
-const VERSION = 'csolo-v9';
+const VERSION = 'csolo-v10';
 const SHELL = [
   './',
   './index.html',
@@ -39,6 +39,13 @@ self.addEventListener('install', (e) => {
       })))
       .then(() => self.skipWaiting())
   );
+});
+
+// app.js asks for this to show a version number in the footer — a plain
+// value, not derived from the cache name, so it works even before the
+// cache exists (a fresh install, or right after activate wiped the old one).
+self.addEventListener('message', (e) => {
+  if (e.data === 'GET_VERSION') e.source.postMessage({ type: 'VERSION', version: VERSION });
 });
 
 self.addEventListener('activate', (e) => {
