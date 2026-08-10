@@ -292,6 +292,28 @@ function clusterWaypoints(routeIndex, raw, cat, thresholdMi) {
     }
   }
 
+  // Seam fix: a linear sort over a closed loop never compares the last
+  // cluster against the first, even when they're circularly adjacent — a
+  // waypoint at mile 0.05 and one at mile 59.88 on a 59.93mi loop are
+  // physically ~0.1mi apart (through the seam where the route closes), not
+  // ~59.8mi apart, but the sort-based pass above has no way to know that.
+  // Real bug this caused: markers right at the White Pass trailhead/loop
+  // seam showed up as two separate, un-merged entries at opposite ends of
+  // the elevation profile instead of one. Checked once, after the linear
+  // pass, rather than built into the main loop, since it only ever applies
+  // at the single seam point.
+  if (routeIndex.ROUTE_IS_LOOP !== false && clusters.length > 1) {
+    const first = clusters[0];
+    const last = clusters[clusters.length - 1];
+    const firstMinMi = first.members[0].mi;
+    const lastMaxMi = last.members[last.members.length - 1].mi;
+    const wrapGapMi = (routeIndex.ROUTE_MILES - lastMaxMi) + firstMinMi;
+    if (wrapGapMi <= thresholdMi) {
+      first.members = [...last.members, ...first.members];
+      clusters.pop();
+    }
+  }
+
   return clusters.map((c) => {
     const members = c.members;
     const mi = members.reduce((s, m) => s + m.mi, 0) / members.length;

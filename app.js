@@ -407,30 +407,36 @@ async function main() {
       const wasFirstFixToday = !dayStart;
 
       // A fix this far from the trail (same threshold snap() itself uses
-      // to say "don't trust this") never establishes or updates a day
-      // start — recording it into the per-day cache would corrupt both
-      // the day boundary and pace measurement from a single bad reading
-      // (a GPS jump, or the app just being tested away from the actual
-      // trail). The position itself is still shown everywhere below —
-      // this only withholds it from the day model, not from "where am I".
+      // to say "don't trust this") never establishes/updates a day start,
+      // AND is never shown as a position — earlier reasoning here was that
+      // "the position itself is still shown, only the day model is
+      // protected" was wrong: snap()'s nearest-point result for a fix miles
+      // off the actual route isn't a real position, it's an arbitrary
+      // nearest point on the line (a real bug — the "you are here" marker
+      // showed up at mile 60 when testing from somewhere nowhere near the
+      // trail, because that's just where the nearest-point math landed).
+      // An untrustworthy fix leaves `lastFix` at whatever it already was
+      // (the last known GOOD position, if any) rather than overwriting it
+      // with noise — a single bad GPS blip shouldn't erase where you
+      // actually last were.
       const trustworthy = snapped.offM <= Geo.OFF_TRAIL_MAX_MI * Geo.M_PER_MILE;
       if (trustworthy) {
         Geo.recordFix(todayKey, fix, snapped);
         dayStart = Days.getDayStart(Geo, todayKey);
+        lastFix = { mi: snapped.mi, t: fix.t, lat: fix.lat, lon: fix.lon, offM: snapped.offM, nearLat: snapped.nearLat, nearLon: snapped.nearLon };
+        profile.setFix({ mi: snapped.mi, eleFt: Geo.elevationAt(snapped.mi) });
+        // Snap the profile's view over to the new day window, but only at
+        // the moment a day actually starts — not on every subsequent fix,
+        // which would yank the view out from under manual pan/zoom.
+        if (wasFirstFixToday && dayStart) {
+          profile.setView(dayStart.mi, Math.min(dayStart.mi + 25, active.ROUTE_MILES));
+        }
+        if (mapController) mapController.updateFixAndFrame(lastFix);
       }
-      lastFix = { mi: snapped.mi, t: fix.t, lat: fix.lat, lon: fix.lon, offM: snapped.offM, nearLat: snapped.nearLat, nearLon: snapped.nearLon };
-
-      profile.setFix({ mi: snapped.mi, eleFt: Geo.elevationAt(snapped.mi) });
-      // Snap the profile's view over to the new day window, but only at
-      // the moment a day actually starts — not on every subsequent fix,
-      // which would yank the view out from under manual pan/zoom.
-      if (trustworthy && wasFirstFixToday && dayStart) {
-        profile.setView(dayStart.mi, Math.min(dayStart.mi + 25, active.ROUTE_MILES));
-      }
-      updateStrips(profile, features, lastFix.mi);
+      updateStrips(profile, features, lastFix?.mi ?? null);
       renderForecast(Forecast.readCache(active.meta.id), todayKey, dayStart, lastFix, active.ROUTE_MILES);
-      if (mapController) mapController.updateFixAndFrame(lastFix);
-      onStatus?.(null);
+      if (!trustworthy) onStatus?.('Fix too far from the trail to trust — showing last known position');
+      else onStatus?.(null);
       return lastFix;
     } catch (e) {
       onStatus?.("Couldn't get a fix — check location is allowed for this site.");
