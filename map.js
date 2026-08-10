@@ -377,6 +377,16 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
     }
   }
 
+  // Is this fix actually visible in the current viewport? Used by
+  // updateFixAndFrame() to decide whether an Update tap needs to reframe
+  // at all — moving the dot is enough when you're already looking at
+  // roughly the right place; only pan/zoom when the new fix would
+  // otherwise update off-screen with no visible change.
+  function isOnScreen(f) {
+    const bounds = map.getBounds();
+    return bounds.contains([f.lon, f.lat]);
+  }
+
   if (fix) {
     updateFix(fix);
     if (centerOnFix) frameOnFix(fix, { instant: true });
@@ -385,6 +395,13 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
   return {
     map,
     updateFix,
+    // Update button's entry point: always moves the dot, and reframes
+    // ONLY if the new fix landed outside the current view — an Update tap
+    // that's still nearby shouldn't yank your manual pan/zoom around.
+    updateFixAndFrame(newFix) {
+      updateFix(newFix);
+      if (!isOnScreen(newFix)) frameOnFix(newFix, { instant: false });
+    },
     recenter: (f) => frameOnFix(f, { instant: false }),
     destroy() { map.remove(); },
   };

@@ -286,6 +286,10 @@ export const OVERNIGHT_END_HOUR = 6; // next calendar day, 6:00 AM — end of th
 //   paceMph — measured (Geo.paceEstimate) when available, else
 //     NOMINAL_PACE_MPH. Used for the forward projection past "now", or for
 //     the entire day when there is no "now" anchor (future days).
+//   routeMiles — caps endMi at the actual route length, so a day starting
+//     near the finish is correctly short rather than projecting 20mi of
+//     trail that doesn't exist (a day starting at mile 45 of a 60mi route
+//     ends at 60, not a nonsensical 65).
 export function computeDayTimeline(dayStartMi, opts = {}) {
   const {
     startHour = NOMINAL_START_HOUR,
@@ -294,9 +298,10 @@ export function computeDayTimeline(dayStartMi, opts = {}) {
     paceMph = NOMINAL_PACE_MPH,
     dayMiles = NOMINAL_DAY_MILES,
     maxHours = 16,
+    routeMiles = Infinity,
   } = opts;
 
-  const endMi = dayStartMi + dayMiles;
+  const endMi = Math.min(dayStartMi + dayMiles, routeMiles);
   const anchored = nowHour != null && nowMi != null && nowHour > startHour;
   // Average pace so far, used only to back-fill hours already passed.
   const backfillPace = anchored ? (nowMi - dayStartMi) / (nowHour - startHour) : paceMph;

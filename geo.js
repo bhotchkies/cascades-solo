@@ -29,7 +29,7 @@
 
 const FIX_KEY_PREFIX = 'csolo.fix.';
 const PROGRESS_KEY_PREFIX = 'csolo.progress.';
-const M_PER_MILE = 1609.344;
+export const M_PER_MILE = 1609.344;
 const FT_PER_M = 3.28084;
 
 // Below this, an off-trail reading is GPS noise (accuracy + a few strides
@@ -41,8 +41,11 @@ const OFF_TRAIL_NOISE_MI = 0.25;
 // trustworthy — the local flat-earth projection is only valid within a few
 // hundred km of the route's own latitude, so a fix from testing the app
 // away from the Cascades (or a wild GPS jump) can snap to an arbitrary point
-// rather than a genuinely nearby one.
-const OFF_TRAIL_MAX_MI = 5;
+// rather than a genuinely nearby one. Exported: app.js reuses this exact
+// threshold to decide whether a fix is trustworthy enough to establish a
+// day boundary — the same "don't trust this" line, applied to a second
+// consequential use rather than invented fresh.
+export const OFF_TRAIL_MAX_MI = 5;
 
 // A pace outside this range is a bad fix (GPS jump), not a real hiking
 // speed even for a fast solo pace.

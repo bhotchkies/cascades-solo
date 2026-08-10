@@ -82,10 +82,9 @@ function makeRouteIndex(ROUTE, ROUTE_STRIDE, midLat) {
   };
 
   // Global-nearest point on the route to (lat, lon) — offset in meters plus
-  // the interpolated trail mile there. This build tool doesn't need
-  // geo.js's multi-candidate loop disambiguation (that's for resolving a
-  // live GPS fix against a progress hint); a fixed OSM feature just needs
-  // whichever point on the route is physically closest to it.
+  // the interpolated trail mile there. Used for OSM path/road geometry
+  // (junctions/bail-outs), where each vertex is walked along its own way's
+  // sequence rather than needing every possible nearby pass.
   function nearest(lat, lon) {
     const [px, py] = project(lat, lon);
     let bestD = Infinity, bestMi = 0;
@@ -101,7 +100,99 @@ function makeRouteIndex(ROUTE, ROUTE_STRIDE, midLat) {
     return { offM: bestD, mi: bestMi };
   }
 
-  return { nearest, ROUTE_MILES: pointAt(n - 1).mi };
+  // All local minima of perpendicular distance — same technique geo.js's
+  // snap() uses to disambiguate a live GPS fix against a progress hint.
+  // Used for community waypoints: a physical spring or campsite near the
+  // lollipop's stick sits close to the trail on BOTH the outbound and
+  // return pass, at two genuinely different trail miles roughly 56mi
+  // apart — nearest() alone would only ever assign it to whichever pass
+  // happened to be a few meters closer, making it invisible on the other
+  // (this was a real reported bug: markers only appeared on the outbound
+  // stick, never the return). Near-duplicate minima within 0.05mi are
+  // merged, since a flat stretch can produce a short run of tied-distance
+  // points that aren't really separate passes.
+  function candidates(lat, lon) {
+    const [px, py] = project(lat, lon);
+    const dist = new Float64Array(n - 1);
+    const mi = new Float64Array(n - 1);
+    for (let i = 0; i < n - 1; i++) {
+      const a = pointAt(i), b = pointAt(i + 1);
+      const [ax, ay] = project(a.lat, a.lon), [bx, by] = project(b.lat, b.lon);
+      const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy;
+      let u = L ? ((px - ax) * dx + (py - ay) * dy) / L : 0;
+      u = Math.max(0, Math.min(1, u));
+      dist[i] = Math.hypot(px - (ax + u * dx), py - (ay + u * dy));
+      mi[i] = a.mi + (b.mi - a.mi) * u;
+    }
+    const out = [];
+    for (let i = 0; i < dist.length; i++) {
+      const prev = i > 0 ? dist[i - 1] : Infinity;
+      const next = i < dist.length - 1 ? dist[i + 1] : Infinity;
+      if (dist[i] <= prev && dist[i] <= next) out.push({ offM: dist[i], mi: mi[i] });
+    }
+    out.sort((a, b) => a.mi - b.mi);
+    const merged = [];
+    for (const c of out) {
+      const last = merged[merged.length - 1];
+      if (last && Math.abs(c.mi - last.mi) < 0.05) {
+        if (c.offM < last.offM) merged[merged.length - 1] = c;
+      } else {
+        merged.push(c);
+      }
+    }
+    return merged;
+  }
+
+  const ROUTE_MILES = pointAt(n - 1).mi;
+
+  // Circular along-trail distance — the SHORT way around a closed loop,
+  // e.g. mile 2 and mile 58 on a 60mi loop are 4mi apart, not 56.
+  function circularDist(a, b) {
+    const d = Math.abs(a - b);
+    return Math.min(d, ROUTE_MILES - d);
+  }
+
+  // The real fix for the lollipop-stick problem took two attempts to get
+  // right:
+  //
+  // Attempt 1 used candidates() directly and took goat-rocks water from 32
+  // clusters to 227 — way beyond the ~1.5-2x expected from genuine stick
+  // duplication.
+  //
+  // Attempt 2 added a circular-distance separation filter (>=2mi apart),
+  // which only dropped it to 138 — still wrong. Root cause turned out to be
+  // candidates()'s "local minimum" test itself: `dist[i] <= prev && dist[i]
+  // <= next` accepts ANY point where the immediate neighbors aren't
+  // strictly closer, which on a curving route fires repeatedly as the
+  // distance simply DESCENDS toward the true nearest point — a diagnostic
+  // on one real water waypoint found a "candidate" at offM 15,644m (9.7mi
+  // off-trail!) on a monotonic descent toward its true match 5m away at a
+  // completely different mile. None of those intermediate points were ever
+  // actually near the trail; they were just locally-better-than-their-
+  // immediate-neighbor on the way to the real answer.
+  //
+  // Fix: candidates() must be filtered against the TRUE global minimum
+  // (nearest(), already O(n) and cheap) before the separation logic ever
+  // runs — a "second pass" candidate has to be genuinely close to the
+  // trail on its own terms, not just locally better than its neighbors.
+  // ABSOLUTE_MARGIN_M is generous relative to how close a real duplicate
+  // stick-pass match should be (single-digit-to-low-double-digit meters,
+  // per the same diagnostic), while excluding anything that was never
+  // actually near the route.
+  const ABSOLUTE_MARGIN_M = 100;
+
+  function distinctPasses(lat, lon, minSeparationMi = 2) {
+    const best = nearest(lat, lon);
+    const close = candidates(lat, lon).filter((c) => c.offM <= best.offM + ABSOLUTE_MARGIN_M);
+    const sorted = close.sort((a, b) => a.offM - b.offM);
+    const accepted = [];
+    for (const c of sorted) {
+      if (accepted.every((a) => circularDist(a.mi, c.mi) >= minSeparationMi)) accepted.push(c);
+    }
+    return accepted;
+  }
+
+  return { nearest, candidates, distinctPasses, circularDist, ROUTE_MILES };
 }
 
 // ------------------------------------------------------------------ overpass
@@ -175,10 +266,21 @@ function loadRawWaypoints(routeId) {
 }
 
 function clusterWaypoints(routeIndex, raw, cat, thresholdMi) {
-  const resolved = raw
-    .filter((w) => w.cat === cat)
-    .map((w) => ({ ...w, mi: routeIndex.nearest(w.lat, w.lon).mi }))
-    .sort((a, b) => a.mi - b.mi);
+  // Expand each raw waypoint onto every genuinely-distinct trail pass —
+  // routeIndex.distinctPasses(), not candidates() directly (which
+  // over-triggers on ordinary switchbacks; see that function's comment).
+  // A waypoint near the lollipop stick becomes two resolved entries, at
+  // two far-apart miles; the clustering below then naturally forms
+  // separate clusters at each pass, since it clusters by along-trail
+  // proximity.
+  const resolved = [];
+  for (const w of raw) {
+    if (w.cat !== cat) continue;
+    for (const cand of routeIndex.distinctPasses(w.lat, w.lon)) {
+      resolved.push({ ...w, mi: cand.mi });
+    }
+  }
+  resolved.sort((a, b) => a.mi - b.mi);
 
   const clusters = [];
   for (const w of resolved) {

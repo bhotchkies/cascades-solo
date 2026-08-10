@@ -258,10 +258,10 @@
  {
   "kind": "camp",
   "mi": 14.053,
-  "name": "campsites",
+  "name": "Camp Night 5",
   "note": null,
-  "count": 1,
-  "lastReported": "2019-09-22"
+  "count": 3,
+  "lastReported": "2022-08-21"
  },
  {
   "kind": "water",
@@ -333,10 +333,10 @@
  },
  {
   "kind": "camp",
-  "mi": 17.639,
+  "mi": 17.663,
   "name": "campsite?",
   "note": null,
-  "count": 4,
+  "count": 5,
   "lastReported": "2026-08-01"
  },
  {
@@ -1003,11 +1003,11 @@
  },
  {
   "kind": "camp",
-  "mi": 42.121,
-  "name": "camping spot",
+  "mi": 42.234,
+  "name": "campsite?",
   "note": null,
-  "count": 2,
-  "lastReported": "2025-09-28"
+  "count": 6,
+  "lastReported": "2026-08-01"
  },
  {
   "kind": "junction",
@@ -1017,10 +1017,234 @@
  },
  {
   "kind": "camp",
-  "mi": 45.89,
-  "name": "Camp Night 5",
+  "mi": 42.695,
+  "name": "BASE CAMP Pref 1",
+  "note": null,
+  "count": 1,
+  "lastReported": "2023-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 44.505,
+  "name": "tent site & water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "water",
+  "mi": 44.868,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2021-07-16"
+ },
+ {
+  "kind": "camp",
+  "mi": 44.917,
+  "name": "Camp - Night Two",
+  "note": null,
+  "count": 6,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "water",
+  "mi": 45.032,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 45.438,
+  "name": "Sun Night Campsite",
+  "note": null,
+  "count": 6,
+  "lastReported": "2024-08-09"
+ },
+ {
+  "kind": "water",
+  "mi": 45.532,
+  "name": "Possible Water",
   "note": null,
   "count": 2,
+  "lastReported": "2023-07-11"
+ },
+ {
+  "kind": "camp",
+  "mi": 45.887,
+  "name": "campsites",
+  "note": null,
+  "count": 3,
   "lastReported": "2022-08-21"
+ },
+ {
+  "kind": "camp",
+  "mi": 46.104,
+  "name": "tent site",
+  "note": null,
+  "count": 2,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 46.61,
+  "name": "Camp Night 2",
+  "note": "Camp at Lake is due north of waypoint",
+  "count": 3,
+  "lastReported": "2021-07-16"
+ },
+ {
+  "kind": "water",
+  "mi": 47.141,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 47.238,
+  "name": "Possible Camp Spot",
+  "note": null,
+  "count": 3,
+  "lastReported": "2023-08-09"
+ },
+ {
+  "kind": "camp",
+  "mi": 48.256,
+  "name": "tent site",
+  "note": null,
+  "count": 1,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 48.755,
+  "name": "Tieton Pass camp",
+  "note": null,
+  "count": 10,
+  "lastReported": "2023-08-24"
+ },
+ {
+  "kind": "water",
+  "mi": 48.774,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-08-26"
+ },
+ {
+  "kind": "camp",
+  "mi": 49.556,
+  "name": "tent site - Sun",
+  "note": "We have to check if this is \"snow grass flats\" because we can't camp there. ",
+  "count": 2,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 49.868,
+  "name": "Camp night 1",
+  "note": "somewhere near here",
+  "count": 1,
+  "lastReported": "2026-08-06"
+ },
+ {
+  "kind": "water",
+  "mi": 49.97,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 50.079,
+  "name": "Camp",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "water",
+  "mi": 50.165,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 50.854,
+  "name": "Camp",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "water",
+  "mi": 51.636,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 52.09,
+  "name": "Hidden springs camp",
+  "note": "Meet at Trailhead",
+  "count": 11,
+  "lastReported": "2026-08-10"
+ },
+ {
+  "kind": "water",
+  "mi": 52.124,
+  "name": "Hidden Springs water source",
+  "note": null,
+  "count": 2,
+  "lastReported": "2021-07-16"
+ },
+ {
+  "kind": "camp",
+  "mi": 54.774,
+  "name": "Small campsite.",
+  "note": null,
+  "count": 9,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "camp",
+  "mi": 55.21,
+  "name": "Camp",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "water",
+  "mi": 57.049,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2019-09-22"
+ },
+ {
+  "kind": "camp",
+  "mi": 57.87,
+  "name": "tent site & water",
+  "note": "Possibly more. Good for hammocks and small tents.",
+  "count": 2,
+  "lastReported": "2025-07-24"
+ },
+ {
+  "kind": "water",
+  "mi": 57.919,
+  "name": "Water",
+  "note": null,
+  "count": 1,
+  "lastReported": "2021-07-16"
  }
 ]

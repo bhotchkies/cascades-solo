@@ -138,12 +138,12 @@ function fmtHour(h) {
 // current state each time this is called — never cached across a fix
 // update, so a fresher measured pace immediately reshapes every future
 // hour's projection (the "self-correcting" behavior).
-function dayTimelineOpts(daysAhead, todayKey, dayStart, lastFix) {
+function dayTimelineOpts(daysAhead, todayKey, dayStart, lastFix, routeMiles) {
   const isToday = daysAhead === 0;
   const cache = Geo.getFix(todayKey);
   const pace = Geo.paceEstimate(cache, Forecast.NOMINAL_PACE_MPH);
   const startHour = isToday && dayStart ? Days.hourOfDay(dayStart.t) : Forecast.NOMINAL_START_HOUR;
-  const opts = { startHour, paceMph: pace.mph };
+  const opts = { startHour, paceMph: pace.mph, routeMiles };
   if (isToday && lastFix && dayStart) {
     opts.nowHour = Days.hourOfDay(lastFix.t);
     opts.nowMi = lastFix.mi;
@@ -155,7 +155,7 @@ function dayTimelineOpts(daysAhead, todayKey, dayStart, lastFix) {
 // {dateStr, dayStartMi, timeline} so the expand handler can reuse them
 // without recomputing — but always called fresh (see call sites), so
 // "reuse" only ever spans a single render, never goes stale.
-function renderForecastCards(grid, todayKey, dayStart, lastFix) {
+function renderForecastCards(grid, todayKey, dayStart, lastFix, routeMiles) {
   const strip = $('forecast-strip');
   if (!grid) {
     strip.innerHTML = '<div class="fc-card">No forecast data yet</div>';
@@ -168,8 +168,8 @@ function renderForecastCards(grid, todayKey, dayStart, lastFix) {
     const dayStartMi = daysAhead === 0
       ? todayStartMi
       : Days.nominalDayStartMi(todayStartMi, daysAhead, Forecast.NOMINAL_DAY_MILES);
-    if (dayStartMi == null) return { daysAhead, dateStr, dayStartMi: null, timeline: [] };
-    const { opts, pace } = dayTimelineOpts(daysAhead, todayKey, dayStart, lastFix);
+    if (dayStartMi == null || dayStartMi >= routeMiles) return { daysAhead, dateStr, dayStartMi: null, timeline: [] };
+    const { opts, pace } = dayTimelineOpts(daysAhead, todayKey, dayStart, lastFix, routeMiles);
     const timeline = Forecast.computeDayTimeline(dayStartMi, opts);
     return { daysAhead, dateStr, dayStartMi, timeline, startHour: opts.startHour, pace };
   });
@@ -184,12 +184,15 @@ function renderForecastCards(grid, todayKey, dayStart, lastFix) {
     const aqiText = Number.isFinite(range.aqiLo)
       ? (range.aqiLo === range.aqiHi ? `AQI ${Math.round(range.aqiLo)}` : `AQI ${Math.round(range.aqiLo)}–${Math.round(range.aqiHi)}`)
       : '';
+    // Clamped to the actual route length — a day starting near the finish
+    // is genuinely short, not 20mi of trail that doesn't exist.
+    const endMi = Math.min(dayStartMi + Forecast.NOMINAL_DAY_MILES, routeMiles);
     return `<div class="fc-card" data-day="${daysAhead}" role="button" tabindex="0">
       <div class="fc-day">${DAY_LABELS[daysAhead]}</div>
       <div class="fc-temps">${Math.round(range.hiF)}° <span class="lo">${Math.round(range.loF)}°</span></div>
       <div class="fc-precip">${range.precipPct != null ? 'up to ' + Math.round(range.precipPct) + '% precip' : ''}</div>
       <div class="fc-aqi ${aqiCls}">${aqiText}</div>
-      <div class="fc-mile">mi ${dayStartMi.toFixed(0)}–${(dayStartMi + Forecast.NOMINAL_DAY_MILES).toFixed(0)} · tap for detail</div>
+      <div class="fc-mile">mi ${dayStartMi.toFixed(0)}–${endMi.toFixed(0)} · tap for detail</div>
     </div>`;
   }).join('');
 
@@ -235,14 +238,14 @@ function renderExpandedDay(grid, day) {
   panel.classList.add('shown');
 }
 
-function renderForecast(cached, todayKey, dayStart, lastFix) {
+function renderForecast(cached, todayKey, dayStart, lastFix, routeMiles) {
   const s = forecastStaleness(cached?.fetchedAt);
   const statusEl = $('status');
   statusEl.className = s.cls;
   $('status-text').textContent = s.text;
 
   const grid = cached?.grid;
-  const dayData = renderForecastCards(grid, todayKey, dayStart, lastFix);
+  const dayData = renderForecastCards(grid, todayKey, dayStart, lastFix, routeMiles);
   currentDayData = dayData;
   currentGrid = grid;
   if (expandedDayIndex != null) {
@@ -402,20 +405,31 @@ async function main() {
       const fix = await Geo.locate();
       const snapped = Geo.snapWithProgress(fix.lat, fix.lon);
       const wasFirstFixToday = !dayStart;
-      Geo.recordFix(todayKey, fix, snapped);
-      dayStart = Days.getDayStart(Geo, todayKey);
+
+      // A fix this far from the trail (same threshold snap() itself uses
+      // to say "don't trust this") never establishes or updates a day
+      // start — recording it into the per-day cache would corrupt both
+      // the day boundary and pace measurement from a single bad reading
+      // (a GPS jump, or the app just being tested away from the actual
+      // trail). The position itself is still shown everywhere below —
+      // this only withholds it from the day model, not from "where am I".
+      const trustworthy = snapped.offM <= Geo.OFF_TRAIL_MAX_MI * Geo.M_PER_MILE;
+      if (trustworthy) {
+        Geo.recordFix(todayKey, fix, snapped);
+        dayStart = Days.getDayStart(Geo, todayKey);
+      }
       lastFix = { mi: snapped.mi, t: fix.t, lat: fix.lat, lon: fix.lon, offM: snapped.offM, nearLat: snapped.nearLat, nearLon: snapped.nearLon };
 
       profile.setFix({ mi: snapped.mi, eleFt: Geo.elevationAt(snapped.mi) });
       // Snap the profile's view over to the new day window, but only at
       // the moment a day actually starts — not on every subsequent fix,
       // which would yank the view out from under manual pan/zoom.
-      if (wasFirstFixToday && dayStart) {
+      if (trustworthy && wasFirstFixToday && dayStart) {
         profile.setView(dayStart.mi, Math.min(dayStart.mi + 25, active.ROUTE_MILES));
       }
       updateStrips(profile, features, lastFix.mi);
-      renderForecast(Forecast.readCache(active.meta.id), todayKey, dayStart, lastFix);
-      if (mapController) mapController.updateFix(lastFix);
+      renderForecast(Forecast.readCache(active.meta.id), todayKey, dayStart, lastFix, active.ROUTE_MILES);
+      if (mapController) mapController.updateFixAndFrame(lastFix);
       onStatus?.(null);
       return lastFix;
     } catch (e) {
@@ -434,10 +448,10 @@ async function main() {
   // spinner" posture as WHW's weather. A failed refresh still leaves the
   // last-known data on screen with its real age, per forecastStaleness().
   const cachedForecast = Forecast.readCache(active.meta.id);
-  renderForecast(cachedForecast, todayKey, dayStart, lastFix);
+  renderForecast(cachedForecast, todayKey, dayStart, lastFix, active.ROUTE_MILES);
   if (navigator.onLine) {
     Forecast.refresh(active.meta.id, Geo, active.ROUTE_MILES)
-      .then((fresh) => renderForecast(fresh, todayKey, dayStart, lastFix))
+      .then((fresh) => renderForecast(fresh, todayKey, dayStart, lastFix, active.ROUTE_MILES))
       .catch((e) => console.error('forecast refresh failed', e));
   }
 
