@@ -242,7 +242,7 @@ const AUTO_CENTER_MAX_MI = 2;
 const KIND_COLOR = {
   water: '#4FC3F7',
   camp: '#5FD87F',
-  junction: '#C77DFF',
+  junction: '#9AA3AD',
   bailout: '#FF6B4A',
 };
 const TRAIL_LINE_COLOR = '#FF3EA5';
