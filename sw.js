@@ -2,7 +2,7 @@
 // Forecast data is NOT cached here — app.js keeps that in localStorage so it can
 // reason about how old it is. The network is always tried first for data.
 
-const VERSION = 'csolo-v7';
+const VERSION = 'csolo-v8';
 const SHELL = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ const SHELL = [
   './profile.js',
   './forecast.js',
   './fire.js',
+  './days.js',
   './routes/index.js',
   './routes/goat-rocks.js',
   './routes/snoqualmie.js',

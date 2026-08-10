@@ -230,6 +230,21 @@ footer.foot .install .url { font-size: 10px; word-break: break-all; }
 #map-legend .legend-swatch { width: 11px; height: 11px; border-radius: 999px; flex: none; border: 1.5px solid #1B1F1C; }
 #map-legend .legend-line { width: 16px; height: 3px; flex: none; border-radius: 2px; }
 
+#map-controls {
+  position: absolute; right: 10px; bottom: 10px; z-index: 21;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+}
+#map-controls .map-ctrl-row { display: flex; gap: 6px; }
+#map-controls button {
+  border: 1px solid var(--rule); background: var(--ground-2); color: var(--ink);
+  border-radius: 999px; padding: 7px 14px; font-size: 12.5px;
+}
+#map-update-status {
+  font-size: 11px; color: var(--ink-mute); background: rgba(27,31,28,.88);
+  padding: 3px 8px; border-radius: 6px; max-width: 220px; text-align: right;
+}
+#map-update-status:empty { display: none; }
+
 /* ---- alerts banner: NWS active alerts (Red Flag, Fire Weather Watch, etc) */
 #alerts-banner {
   display: none; padding: 10px 14px; background: rgba(216,103,79,.18);
@@ -248,8 +263,9 @@ footer.foot .install .url { font-size: 10px; word-break: break-all; }
 #forecast-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .fc-card {
   background: var(--panel); border: 1px solid var(--rule); border-radius: 10px;
-  padding: 10px; text-align: center;
+  padding: 10px; text-align: center; cursor: pointer;
 }
+.fc-card:hover { border-color: var(--ink-mute); }
 .fc-card .fc-day { font-size: 10.5px; color: var(--ink-mute); margin-bottom: 4px; }
 .fc-card .fc-temps { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .fc-card .fc-temps .lo { color: var(--ink-mute); font-weight: 500; }
@@ -259,6 +275,32 @@ footer.foot .install .url { font-size: 10px; word-break: break-all; }
 .fc-card .fc-aqi.moderate { color: var(--amber); }
 .fc-card .fc-aqi.unhealthy { color: var(--red); }
 .fc-card .fc-mile { font-size: 9.5px; color: var(--ink-mute); margin-top: 4px; }
+
+/* ---- expanded day detail: place blocks, only-relevant-hours */
+#fc-expanded { display: none; margin-top: 8px; }
+#fc-expanded.shown { display: block; }
+.fc-expanded-header {
+  font-size: 11px; color: var(--ink-mute); padding: 6px 2px 8px;
+  border-bottom: 1px solid var(--rule); margin-bottom: 6px;
+}
+.fc-place-block { margin-bottom: 10px; }
+.fc-place-block .fc-place-mile {
+  font-size: 11px; font-weight: 700; color: var(--ink);
+  text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px;
+}
+.fc-place-block.fc-overnight .fc-place-mile { color: var(--water); }
+.fc-hour-row {
+  display: grid; grid-template-columns: 44px 40px 40px 1fr; gap: 8px;
+  font-size: 12px; padding: 3px 2px; align-items: center;
+  border-bottom: 1px solid var(--rule);
+}
+.fc-hour-time { color: var(--ink-mute); font-variant-numeric: tabular-nums; }
+.fc-hour-temp { font-weight: 600; font-variant-numeric: tabular-nums; }
+.fc-hour-precip { color: var(--water); font-variant-numeric: tabular-nums; }
+.fc-hour-aqi { font-weight: 600; font-variant-numeric: tabular-nums; }
+.fc-hour-aqi.good { color: var(--accent); }
+.fc-hour-aqi.moderate { color: var(--amber); }
+.fc-hour-aqi.unhealthy { color: var(--red); }
 
 #nws-block { padding: 10px 14px 4px; font-size: 12px; }
 #nws-narrative { color: var(--ink-mute); margin-bottom: 8px; }
@@ -307,6 +349,13 @@ footer.foot .install .url { font-size: 10px; word-break: break-all; }
     <div class="legend-row"><span class="legend-swatch" style="background:var(--marker-junction)"></span> Junction</div>
     <div class="legend-row"><span class="legend-swatch" style="background:var(--marker-bailout)"></span> Road crossing</div>
   </div>
+  <div id="map-controls">
+    <span id="map-update-status"></span>
+    <div class="map-ctrl-row">
+      <button id="map-recenter" type="button">Recenter</button>
+      <button id="map-update" type="button">Update</button>
+    </div>
+  </div>
   <button id="map-back" type="button">✕ Close map</button>
 </div>
 
@@ -350,6 +399,7 @@ footer.foot .install .url { font-size: 10px; word-break: break-all; }
 <div id="forecast-section">
   <div class="section-label">Next 3 days — ambient, not a safety source</div>
   <div id="forecast-strip"></div>
+  <div id="fc-expanded"></div>
 </div>
 
 <div id="nws-block">

@@ -66,15 +66,20 @@ export class Profile {
   // profileFor/elevationAt/ascentAt. `routeMiles` is that route's total
   // length. `onTap(feature)` fires when a marker is tapped, `onViewChange`
   // fires after every pan/zoom so app.js can refresh the strips.
-  constructor(svgEl, { geo, routeMiles, onTap, onViewChange }) {
+  //
+  // `initialView` optionally overrides the default full-route opening
+  // window with `{ start, end }` — app.js uses this for the
+  // dayStart-to-dayStart+25 view once a trip is underway. Falls back to
+  // the full route (unchanged default) with no fix/day recorded yet.
+  constructor(svgEl, { geo, routeMiles, onTap, onViewChange, initialView }) {
     this.svg = svgEl;
     this.geo = geo;
     this.routeMiles = routeMiles;
     this.onTap = onTap || (() => {});
     this.onViewChange = onViewChange || (() => {});
 
-    this.viewStart = 0;
-    this.viewEnd = routeMiles;
+    this.viewStart = initialView ? initialView.start : 0;
+    this.viewEnd = initialView ? initialView.end : routeMiles;
     this.features = [];
     this.fix = null; // { mi, eleFt } or null
 

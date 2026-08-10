@@ -11,6 +11,7 @@ import { ROUTES, getActiveRouteId, setActiveRouteId, routeById, loadActiveRoute 
 import { Profile } from './profile.js';
 import * as Forecast from './forecast.js';
 import * as Fire from './fire.js';
+import * as Days from './days.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -126,34 +127,126 @@ function forecastStaleness(fetchedAt) {
   return { cls: 'red', text: `Forecast STALE — ${hrs} h old${off}` };
 }
 
-function renderForecast(cached, fixMi, routeMiles, isLoop) {
+function fmtHour(h) {
+  const hh = Math.round(h) % 24;
+  const ampm = hh < 12 ? 'AM' : 'PM';
+  const h12 = hh % 12 === 0 ? 12 : hh % 12;
+  return `${h12}${ampm}`;
+}
+
+// Everything computeDayTimeline() needs for one day, derived fresh from
+// current state each time this is called — never cached across a fix
+// update, so a fresher measured pace immediately reshapes every future
+// hour's projection (the "self-correcting" behavior).
+function dayTimelineOpts(daysAhead, todayKey, dayStart, lastFix) {
+  const isToday = daysAhead === 0;
+  const cache = Geo.getFix(todayKey);
+  const pace = Geo.paceEstimate(cache, Forecast.NOMINAL_PACE_MPH);
+  const startHour = isToday && dayStart ? Days.hourOfDay(dayStart.t) : Forecast.NOMINAL_START_HOUR;
+  const opts = { startHour, paceMph: pace.mph };
+  if (isToday && lastFix && dayStart) {
+    opts.nowHour = Days.hourOfDay(lastFix.t);
+    opts.nowMi = lastFix.mi;
+  }
+  return { opts, pace };
+}
+
+// Builds and renders the 3 collapsed day cards, and returns per-day
+// {dateStr, dayStartMi, timeline} so the expand handler can reuse them
+// without recomputing — but always called fresh (see call sites), so
+// "reuse" only ever spans a single render, never goes stale.
+function renderForecastCards(grid, todayKey, dayStart, lastFix) {
+  const strip = $('forecast-strip');
+  if (!grid) {
+    strip.innerHTML = '<div class="fc-card">No forecast data yet</div>';
+    return [];
+  }
+  const todayStartMi = dayStart?.mi ?? lastFix?.mi ?? null;
+
+  const dayData = [0, 1, 2].map((daysAhead) => {
+    const dateStr = Days.addDaysStr(todayKey, daysAhead);
+    const dayStartMi = daysAhead === 0
+      ? todayStartMi
+      : Days.nominalDayStartMi(todayStartMi, daysAhead, Forecast.NOMINAL_DAY_MILES);
+    if (dayStartMi == null) return { daysAhead, dateStr, dayStartMi: null, timeline: [] };
+    const { opts, pace } = dayTimelineOpts(daysAhead, todayKey, dayStart, lastFix);
+    const timeline = Forecast.computeDayTimeline(dayStartMi, opts);
+    return { daysAhead, dateStr, dayStartMi, timeline, startHour: opts.startHour, pace };
+  });
+
+  strip.innerHTML = dayData.map(({ daysAhead, dayStartMi, timeline }) => {
+    if (dayStartMi == null) {
+      return `<div class="fc-card" data-day="${daysAhead}"><div class="fc-day">${DAY_LABELS[daysAhead]}</div>—<div class="fc-mile">no position yet</div></div>`;
+    }
+    const range = Forecast.dayRangeSummary(grid, timeline, daysAhead);
+    if (!range) return `<div class="fc-card" data-day="${daysAhead}"><div class="fc-day">${DAY_LABELS[daysAhead]}</div>—</div>`;
+    const aqiCls = AQI_LABEL(range.aqiHi);
+    const aqiText = Number.isFinite(range.aqiLo)
+      ? (range.aqiLo === range.aqiHi ? `AQI ${Math.round(range.aqiLo)}` : `AQI ${Math.round(range.aqiLo)}–${Math.round(range.aqiHi)}`)
+      : '';
+    return `<div class="fc-card" data-day="${daysAhead}" role="button" tabindex="0">
+      <div class="fc-day">${DAY_LABELS[daysAhead]}</div>
+      <div class="fc-temps">${Math.round(range.hiF)}° <span class="lo">${Math.round(range.loF)}°</span></div>
+      <div class="fc-precip">${range.precipPct != null ? 'up to ' + Math.round(range.precipPct) + '% precip' : ''}</div>
+      <div class="fc-aqi ${aqiCls}">${aqiText}</div>
+      <div class="fc-mile">mi ${dayStartMi.toFixed(0)}–${(dayStartMi + Forecast.NOMINAL_DAY_MILES).toFixed(0)} · tap for detail</div>
+    </div>`;
+  }).join('');
+
+  return dayData;
+}
+
+// The expanded view for one day: place blocks (only the hours you'll
+// actually be there) plus an overnight block at wherever the day ends.
+function renderExpandedDay(grid, day) {
+  const panel = $('fc-expanded');
+  if (!day || day.dayStartMi == null) { panel.innerHTML = ''; panel.classList.remove('shown'); return; }
+
+  const blocks = Forecast.timelineToPlaceBlocks(grid, day.timeline, day.dateStr);
+  const overnight = Forecast.overnightBlock(grid, day.dateStr, day.timeline);
+
+  const hourRow = (h) => {
+    const aqiCls = AQI_LABEL(h.aqi);
+    return `<div class="fc-hour-row">
+      <span class="fc-hour-time">${fmtHour(h.hour)}</span>
+      <span class="fc-hour-temp">${h.tempF != null ? Math.round(h.tempF) + '°' : '—'}</span>
+      <span class="fc-hour-precip">${h.precipPct != null ? h.precipPct + '%' : '—'}</span>
+      <span class="fc-hour-aqi ${aqiCls}">${h.aqi != null ? Math.round(h.aqi) : '—'}</span>
+    </div>`;
+  };
+
+  const placeBlocksHtml = blocks.map((b) => `
+    <div class="fc-place-block">
+      <div class="fc-place-mile">mile ${b.sample.mi.toFixed(0)}</div>
+      ${b.hours.map(hourRow).join('')}
+    </div>`).join('');
+
+  const overnightHtml = overnight ? `
+    <div class="fc-place-block fc-overnight">
+      <div class="fc-place-mile">Overnight · mile ${overnight.sample.mi.toFixed(0)}</div>
+      ${overnight.hours.filter((_, i) => i % 2 === 0).map(hourRow).join('')}
+    </div>` : '';
+
+  const paceNote = day.pace
+    ? `Projected from ${fmtHour(day.startHour)} · ${day.pace.mph.toFixed(1)} mph ${day.pace.source === 'measured' ? '(measured)' : '(assumed)'}`
+    : '';
+
+  panel.innerHTML = `<div class="fc-expanded-header">${paceNote}</div>${placeBlocksHtml}${overnightHtml}`;
+  panel.classList.add('shown');
+}
+
+function renderForecast(cached, todayKey, dayStart, lastFix) {
   const s = forecastStaleness(cached?.fetchedAt);
   const statusEl = $('status');
   statusEl.className = s.cls;
   $('status-text').textContent = s.text;
 
   const grid = cached?.grid;
-  const strip = $('forecast-strip');
-  if (!grid) {
-    strip.innerHTML = '<div class="fc-card">No forecast data yet</div>';
-  } else {
-    const currentMi = fixMi ?? 0;
-    const cache = Geo.getFix('trip');
-    const pace = Geo.paceEstimate(cache);
-    strip.innerHTML = [0, 1, 2].map((daysAhead) => {
-      const projMi = Forecast.projectPosition(Geo, currentMi, pace, daysAhead, routeMiles, isLoop);
-      const sample = Forecast.nearestSample(grid, projMi);
-      const day = sample?.days?.[daysAhead];
-      if (!day) return `<div class="fc-card"><div class="fc-day">${DAY_LABELS[daysAhead]}</div>—</div>`;
-      const aqiCls = AQI_LABEL(day.aqi);
-      return `<div class="fc-card">
-        <div class="fc-day">${DAY_LABELS[daysAhead]}</div>
-        <div class="fc-temps">${Math.round(day.hiF)}° <span class="lo">${Math.round(day.loF)}°</span></div>
-        <div class="fc-precip">${day.precipPct != null ? day.precipPct + '% precip' : ''}</div>
-        <div class="fc-aqi ${aqiCls}">${day.aqi != null ? 'AQI ' + Math.round(day.aqi) : ''}</div>
-        <div class="fc-mile">mile ${projMi.toFixed(0)}</div>
-      </div>`;
-    }).join('');
+  const dayData = renderForecastCards(grid, todayKey, dayStart, lastFix);
+  currentDayData = dayData;
+  currentGrid = grid;
+  if (expandedDayIndex != null) {
+    renderExpandedDay(grid, dayData[expandedDayIndex]);
   }
 
   const nws = cached?.nws;
@@ -174,6 +267,13 @@ function renderForecast(cached, fixMi, routeMiles, isLoop) {
   const discussionText = $('nws-discussion-text');
   discussionText.textContent = nws?.discussion?.text || 'No discussion available.';
 }
+
+// Module-level so the day-card click handler (registered once) always
+// reads the latest render's data rather than whatever existed at
+// registration time.
+let currentDayData = [];
+let currentGrid = null;
+let expandedDayIndex = null;
 
 // ------------------------------------------------------------------- fire
 
@@ -236,14 +336,36 @@ async function main() {
     if (res.ok) features = await res.json();
   } catch { /* offline first load with nothing cached yet — profile still works with no markers */ }
 
+  // Day tracking: today's key is a calendar date, reused as geo.js's fix
+  // sessionKey (see days.js's header) so pace measurement and day-start
+  // both reset naturally at midnight. `dayStart` is null on the very first
+  // open of a new day, until the first fix arrives.
+  const todayKey = Days.todayDateStr();
+  let dayStart = Days.getDayStart(Geo, todayKey);
+  let lastFix = null; // { mi, t, lat, lon, offM, nearLat, nearLon } — latest fix, richer than dayStart
+  // Declared here (not down by the map-toggle listener) so refreshFix()'s
+  // `if (mapController)` below is never in a temporal-dead-zone reference —
+  // relying on run-to-completion timing across the two spots was correct
+  // but fragile enough to fix outright.
+  let mapController = null;
+  let mapMod = null;
+
+  // Opening window: dayStart -> dayStart+25, clamped to the route so the
+  // last day of a loop doesn't wrap around to the beginning. Falls back to
+  // the full route when there's no fix yet today (e.g. still at home).
+  const initialView = dayStart
+    ? { start: dayStart.mi, end: Math.min(dayStart.mi + 25, active.ROUTE_MILES) }
+    : undefined;
+
   const svg = $('profile-svg');
   const profile = new Profile(svg, {
     geo: Geo,
     routeMiles: active.ROUTE_MILES,
     onTap: openSheet,
+    initialView,
     onViewChange: () => {
       $('reset-view').classList.toggle('shown', !profile.isFullView());
-      updateStrips(profile, features, lastFixMi);
+      updateStrips(profile, features, lastFix?.mi ?? null);
     },
   });
 
@@ -255,38 +377,67 @@ async function main() {
   $('sheet-close').addEventListener('click', closeSheet);
   $('sheet-backdrop').addEventListener('click', closeSheet);
 
-  let lastFixMi = null;
-  let lastMapFix = null; // { lat, lon, offM, nearLat, nearLon } — what map.js's open()/updateFix() want
-  updateStrips(profile, features, lastFixMi);
+  updateStrips(profile, features, null);
 
-  // Best-effort one-shot fix. Fire-and-forget, NOT awaited — this used to be
-  // `await`ed inline, which meant a slow or unanswered geolocation
-  // permission prompt (up to the 15s timeout in Geo.locate(), or indefinitely
-  // on desktop if the prompt just sits there) blocked every line of main()
-  // after it, including the map-toggle/map-download/map-back listeners
-  // further down. The map button would look dead until either a fix arrived
-  // or forecast/fire started rendering — which is what actually happened
-  // right before it, making it look like "the map is waiting on weather"
-  // when the real cause was geolocation blocking listener setup entirely.
-  Geo.locate().then((fix) => {
-    const snapped = Geo.snapWithProgress(fix.lat, fix.lon);
-    Geo.recordFix('trip', fix, snapped);
-    lastFixMi = snapped.mi;
-    lastMapFix = { lat: fix.lat, lon: fix.lon, offM: snapped.offM, nearLat: snapped.nearLat, nearLon: snapped.nearLon };
-    profile.setFix({ mi: snapped.mi, eleFt: Geo.elevationAt(snapped.mi) });
-    updateStrips(profile, features, lastFixMi);
-    renderForecast(Forecast.readCache(active.meta.id), lastFixMi, active.ROUTE_MILES, active.ROUTE_IS_LOOP);
-  }).catch(() => { /* no fix available — profile/strips/map all work fine with none */ });
+  // Expand/collapse a day card — delegated on the strip container since
+  // cards are rebuilt on every render. Reads currentDayData/currentGrid at
+  // click time (module-level, always current), not whatever existed when
+  // this listener was registered.
+  $('forecast-strip').addEventListener('click', (e) => {
+    const card = e.target.closest('.fc-card');
+    if (!card) return;
+    const idx = Number(card.dataset.day);
+    expandedDayIndex = expandedDayIndex === idx ? null : idx;
+    renderExpandedDay(currentGrid, expandedDayIndex != null ? currentDayData[expandedDayIndex] : null);
+  });
+
+  // One-shot GPS fix + full downstream refresh — position, strips,
+  // forecast projection, and (if open) the map dot. Shared by the initial
+  // best-effort locate on load and the map screen's Update button, mirror
+  // of WHW's mapUpdateFix()/Update button: never watchPosition, always
+  // shows its own status rather than failing silently.
+  async function refreshFix({ onStatus } = {}) {
+    onStatus?.('Locating…');
+    try {
+      const fix = await Geo.locate();
+      const snapped = Geo.snapWithProgress(fix.lat, fix.lon);
+      const wasFirstFixToday = !dayStart;
+      Geo.recordFix(todayKey, fix, snapped);
+      dayStart = Days.getDayStart(Geo, todayKey);
+      lastFix = { mi: snapped.mi, t: fix.t, lat: fix.lat, lon: fix.lon, offM: snapped.offM, nearLat: snapped.nearLat, nearLon: snapped.nearLon };
+
+      profile.setFix({ mi: snapped.mi, eleFt: Geo.elevationAt(snapped.mi) });
+      // Snap the profile's view over to the new day window, but only at
+      // the moment a day actually starts — not on every subsequent fix,
+      // which would yank the view out from under manual pan/zoom.
+      if (wasFirstFixToday && dayStart) {
+        profile.setView(dayStart.mi, Math.min(dayStart.mi + 25, active.ROUTE_MILES));
+      }
+      updateStrips(profile, features, lastFix.mi);
+      renderForecast(Forecast.readCache(active.meta.id), todayKey, dayStart, lastFix);
+      if (mapController) mapController.updateFix(lastFix);
+      onStatus?.(null);
+      return lastFix;
+    } catch (e) {
+      onStatus?.("Couldn't get a fix — check location is allowed for this site.");
+      throw e;
+    }
+  }
+
+  // Best-effort one-shot fix on load. Fire-and-forget, NOT awaited — a slow
+  // or unanswered geolocation permission prompt must never block the rest
+  // of main() (map screen, forecast, fire) from becoming usable.
+  refreshFix().catch(() => { /* no fix available — everything works fine with none */ });
 
   // Forecast: render whatever's cached immediately (works offline), then
   // refresh in the background — same "show the age, don't hide behind a
   // spinner" posture as WHW's weather. A failed refresh still leaves the
   // last-known data on screen with its real age, per forecastStaleness().
   const cachedForecast = Forecast.readCache(active.meta.id);
-  renderForecast(cachedForecast, lastFixMi, active.ROUTE_MILES, active.ROUTE_IS_LOOP);
+  renderForecast(cachedForecast, todayKey, dayStart, lastFix);
   if (navigator.onLine) {
     Forecast.refresh(active.meta.id, Geo, active.ROUTE_MILES)
-      .then((fresh) => renderForecast(fresh, lastFixMi, active.ROUTE_MILES, active.ROUTE_IS_LOOP))
+      .then((fresh) => renderForecast(fresh, todayKey, dayStart, lastFix))
       .catch((e) => console.error('forecast refresh failed', e));
   }
 
@@ -303,8 +454,6 @@ async function main() {
   // parsing MapLibre. Re-fetched/rebuilt on every open() call rather than
   // kept alive in the background; this is a convenience screen, not
   // something worth the memory of a persistent map instance.
-  let mapController = null;
-  let mapMod = null;
   $('map-toggle').addEventListener('click', async () => {
     $('map-screen').classList.add('open');
     mapMod = mapMod || await import('./map.js');
@@ -319,7 +468,7 @@ async function main() {
         if (mapController) mapController.destroy();
         mapController = await mapMod.open($('map-container'), {
           routeId: active.meta.id, route: active, geo: Geo, features,
-          fix: lastMapFix,
+          fix: lastFix,
           onFeatureTap: openSheet,
         });
       } catch (e) {
@@ -354,6 +503,25 @@ async function main() {
   $('map-back').addEventListener('click', () => {
     $('map-screen').classList.remove('open');
     if (mapController) { mapController.destroy(); mapController = null; }
+  });
+
+  // Recenter: reframe the already-open map on the latest known fix. No new
+  // GPS request — same distinction WHW drew between the two buttons.
+  $('map-recenter').addEventListener('click', () => {
+    if (mapController && lastFix) mapController.recenter(lastFix);
+  });
+
+  // Update: a fresh one-shot fix, shown inline on the map screen itself
+  // (WHW's mapUpdateFix() pattern) rather than swallowed — a stuck
+  // "Locating…" with no explanation is worse than a plain error. Goes
+  // through the same refreshFix() as the initial on-load attempt, so a
+  // tap here updates the map dot AND the strips/forecast projection
+  // underneath, not just what's visible on the map screen.
+  $('map-update').addEventListener('click', async () => {
+    const statusEl = $('map-update-status');
+    try {
+      await refreshFix({ onStatus: (msg) => { statusEl.textContent = msg || ''; } });
+    } catch { /* status already shows the error, from refreshFix's own onStatus call */ }
   });
 
   // Service worker: offline shell + cached basemap once those exist.

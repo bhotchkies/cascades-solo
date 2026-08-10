@@ -295,7 +295,7 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
     container,
     style,
     center: centerOnFix ? [fix.lon, fix.lat] : [route.ROUTE[1], route.ROUTE[0]],
-    zoom: centerOnFix ? 14 : 11,
+    zoom: centerOnFix ? 15 : 12, // matches WHW's open-zoom levels
     attributionControl: { compact: true },
   });
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
@@ -371,9 +371,9 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
       bounds.extend([f.nearLon, f.nearLat]);
       map.fitBounds(bounds, { padding: 60, maxZoom: 16, animate: !instant });
     } else if (instant) {
-      map.jumpTo({ center: [f.lon, f.lat], zoom: 14 });
+      map.jumpTo({ center: [f.lon, f.lat], zoom: 15 });
     } else {
-      map.flyTo({ center: [f.lon, f.lat], zoom: 14 });
+      map.flyTo({ center: [f.lon, f.lat], zoom: 15 });
     }
   }
 
