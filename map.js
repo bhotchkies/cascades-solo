@@ -388,12 +388,17 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
         layout: {
           'text-field': ['concat', ['get', 'mile'], ' mi'],
           'text-font': ['Noto Sans Regular'],
-          'text-size': 11,
+          // A flat text-size stays pinned at the same screen-pixel size at
+          // every zoom (standard MapLibre/cartographic behavior) — but that
+          // read as "the numbers never get bigger when you zoom in", so
+          // this scales up with zoom instead: bigger and easier to read
+          // without glasses once you're actually zoomed in on a spot.
+          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 14, 16, 22],
           'text-anchor': 'left',
           'text-offset': [0.6, 0],
         },
         paint: {
-          'text-color': '#EDEFE6', 'text-halo-color': '#1B1F1C', 'text-halo-width': 1.3,
+          'text-color': '#EDEFE6', 'text-halo-color': '#1B1F1C', 'text-halo-width': 1.5,
         },
       });
       map.addLayer({
@@ -403,12 +408,12 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
         layout: {
           'text-field': ['get', 'mile'],
           'text-font': ['Noto Sans Regular'],
-          'text-size': 10,
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 14, 17, 21],
           'text-anchor': 'left',
           'text-offset': [0.6, 0],
         },
         paint: {
-          'text-color': '#EDEFE6', 'text-halo-color': '#1B1F1C', 'text-halo-width': 1.2,
+          'text-color': '#EDEFE6', 'text-halo-color': '#1B1F1C', 'text-halo-width': 1.4,
         },
       });
 

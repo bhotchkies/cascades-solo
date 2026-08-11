@@ -50,6 +50,16 @@ function plotTop(maxFt) {
   return Math.max(200, Math.ceil(maxFt / 200) * 200);
 }
 
+// The y-axis used to always run 0 -> plotTop, which is correct for a route
+// that touches sea level but wastes most of the chart on Cascades terrain
+// that never drops below ~1,600-3,000 ft — a huge band of empty space below
+// the actual line. Floor to the nearest 200 ft below the window's lowest
+// point instead, mirroring plotTop's ceil-to-200 exactly, so both ends get
+// the same small rounding pad and the terrain fills the chart.
+function plotBottom(minFt) {
+  return Math.max(0, Math.floor(minFt / 200) * 200);
+}
+
 function pickMileStep(spanMi) {
   for (const step of MILE_STEPS) {
     if (spanMi / step <= TARGET_VGRIDLINES * 1.6) return step;
@@ -136,15 +146,17 @@ export class Profile {
     if (profile.length < 2) { this.svg.innerHTML = ''; return; }
 
     const top = plotTop(Math.max(...profile.map((p) => p.eleFt)));
+    let bottom = plotBottom(Math.min(...profile.map((p) => p.eleFt)));
+    if (top - bottom < 200) bottom = top - 200; // guard near-flat windows
     const x = (mi) => X0 + ((mi - startMi) / spanMi) * (X1 - X0);
-    const y = (ft) => Y1 - (Math.max(0, ft) / top) * (Y1 - Y0);
+    const y = (ft) => Y1 - ((Math.max(bottom, ft) - bottom) / (top - bottom)) * (Y1 - Y0);
 
     const linePts = profile.map((p) => `${x(p.mi).toFixed(1)},${y(p.eleFt).toFixed(1)}`);
     const areaPath = `M${x(startMi).toFixed(1)},${Y1} L${linePts.join(' L')} L${x(endMi).toFixed(1)},${Y1}Z`;
 
-    // ---- horizontal gridlines: 0, half, top
+    // ---- horizontal gridlines: bottom, half, top
     const grid = [];
-    for (const ft of [0, top / 2, top]) {
+    for (const ft of [bottom, (bottom + top) / 2, top]) {
       const gy = y(ft).toFixed(1);
       grid.push(`<line class="ep-grid" x1="${X0}" y1="${gy}" x2="${X1}" y2="${gy}"/>`);
       grid.push(`<text class="ep-ylab" x="${X0 - 6}" y="${gy}">${ft.toLocaleString('en-US')}</text>`);
