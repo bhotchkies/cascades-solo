@@ -393,12 +393,12 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
           // read as "the numbers never get bigger when you zoom in", so
           // this scales up with zoom instead: bigger and easier to read
           // without glasses once you're actually zoomed in on a spot.
-          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 14, 16, 22],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 20, 16, 32],
           'text-anchor': 'left',
-          'text-offset': [0.6, 0],
+          'text-offset': [0.7, 0],
         },
         paint: {
-          'text-color': '#EDEFE6', 'text-halo-color': '#1B1F1C', 'text-halo-width': 1.5,
+          'text-color': '#EDEFE6', 'text-halo-color': '#1B1F1C', 'text-halo-width': 1.8,
         },
       });
       map.addLayer({
@@ -408,12 +408,12 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
         layout: {
           'text-field': ['get', 'mile'],
           'text-font': ['Noto Sans Regular'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 14, 17, 21],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 20, 17, 30],
           'text-anchor': 'left',
-          'text-offset': [0.6, 0],
+          'text-offset': [0.7, 0],
         },
         paint: {
-          'text-color': '#EDEFE6', 'text-halo-color': '#1B1F1C', 'text-halo-width': 1.4,
+          'text-color': '#EDEFE6', 'text-halo-color': '#1B1F1C', 'text-halo-width': 1.8,
         },
       });
 

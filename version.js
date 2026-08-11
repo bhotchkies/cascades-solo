@@ -12,7 +12,7 @@
 
 // sw.js's cache-bust key — bump on any change to the app shell (HTML, JS,
 // CSS, the vendored routes/features). Shown in the footer.
-export const APP_VERSION = 'csolo-v12';
+export const APP_VERSION = 'csolo-v13';
 
 // map.js's archive-bust key — bump only when a route's .pmtiles is rebuilt
 // or a vendored map file (maplibre-gl, pmtiles.js, the glyph font) changes.

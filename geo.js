@@ -215,6 +215,27 @@ function candidatesFor(lat, lon) {
       merged.push(c);
     }
   }
+  // The pass above only compares ADJACENT entries in mile-sorted order, so
+  // it never catches the one pair that actually needs wrap-around
+  // comparison: a fix exactly at a closed loop's seam (mile 0 and mile
+  // ROUTE_MILES are the same physical point — e.g. the White Pass
+  // trailhead on Knife Edge Lollypop) produces two tied local-minima
+  // candidates at opposite ends of the sorted array. Real bug this caused:
+  // a fix taken right at the trailhead sometimes resolved to mile ~59.93
+  // instead of mile 0, purely from floating-point rounding in the
+  // projection math deciding which of the two tied candidates counted as
+  // "best" — and downstream code's `mi >= ROUTE_MILES` range guards then
+  // treated that as "past the end of the route" and discarded the fix
+  // entirely. Always keep the LOW-mi representative when this fires: it's
+  // the one every downstream `>= ROUTE_MILES` check already handles safely.
+  if (ROUTE_IS_LOOP && merged.length > 1) {
+    const first = merged[0];
+    const last = merged[merged.length - 1];
+    if (circularDist(first.mi, last.mi) < 0.05) {
+      merged[0] = { ...first, offM: Math.min(first.offM, last.offM) };
+      merged.pop();
+    }
+  }
   return merged;
 }
 
