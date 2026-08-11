@@ -206,6 +206,64 @@ function writeCache(routeId, data) {
   catch { /* quota — the fetch just won't survive a reload */ }
 }
 
+// ------------------------------------------------------------ compare popup
+//
+// "Worst AQI across all days" for the route-compare popup: the single
+// highest daily-max AQI found at any sample point, on any of the 3
+// forecast days. No pace/day-start projection — there's no hike happening
+// on a route you're just comparing, so this deliberately isn't tied to a
+// position the way the home-screen forecast cards are.
+
+function worstAqiFromGrid(grid) {
+  if (!grid) return null;
+  const vals = grid.flatMap((p) => (p.days || []).map((d) => d.aqi).filter((v) => v != null));
+  return vals.length ? Math.max(...vals) : null;
+}
+
+// For the ACTIVE route: reuse whatever's already cached, no new fetch.
+export function worstAqiFromCache(routeId) {
+  return worstAqiFromGrid(readCache(routeId)?.grid);
+}
+
+// Route-agnostic lat/lon interpolation — a standalone copy of geo.js's
+// latLonAt() math, taking route data as an explicit argument instead of
+// reading geo.js's shared singleton. That singleton always holds whichever
+// route the rest of the app is actively using (profile rendering, GPS
+// snapping); fetching a SECOND route's forecast here for comparison must
+// never touch it, or a profile redraw / GPS refresh mid-fetch would
+// briefly render against the wrong route's geometry.
+function latLonAtRaw(route, stride, mi) {
+  const n = route.length / stride;
+  const pointAt = (i) => ({ lat: route[i * stride], lon: route[i * stride + 1], mi: route[i * stride + 2] });
+  const last = pointAt(n - 1);
+  if (mi <= 0) { const p = pointAt(0); return { lat: p.lat, lon: p.lon }; }
+  if (mi >= last.mi) return { lat: last.lat, lon: last.lon };
+  for (let i = 0; i < n - 1; i++) {
+    const a = pointAt(i), b = pointAt(i + 1);
+    if (mi >= a.mi && mi <= b.mi) {
+      const span = b.mi - a.mi;
+      const u = span > 0 ? (mi - a.mi) / span : 0;
+      return { lat: a.lat + (b.lat - a.lat) * u, lon: a.lon + (b.lon - a.lon) * u };
+    }
+  }
+  return { lat: last.lat, lon: last.lon };
+}
+
+// For a route that ISN'T active: fetches its own fresh AQI grid via a
+// throwaway set of sample points, without ever calling Geo.setRoute().
+// `routeModule` is the imported route module ({ ROUTE, ROUTE_STRIDE,
+// ROUTE_MILES }) — the caller already has it from routes/index.js.
+export async function worstAqiForRoute(routeModule) {
+  const { ROUTE, ROUTE_STRIDE, ROUTE_MILES } = routeModule;
+  const points = [];
+  for (let i = 0; i < SAMPLE_COUNT; i++) {
+    const mi = (ROUTE_MILES * i) / (SAMPLE_COUNT - 1);
+    points.push({ mi, ...latLonAtRaw(ROUTE, ROUTE_STRIDE, mi) });
+  }
+  const grid = await fetchOpenMeteoGrid(points);
+  return worstAqiFromGrid(grid);
+}
+
 // ---------------------------------------------------------------- refresh
 
 // Fetches everything and caches it. Partial failure is tolerated per

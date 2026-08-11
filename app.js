@@ -7,7 +7,7 @@
 // list is set — they just have nothing to show until build_features.js runs.
 
 import * as Geo from './geo.js';
-import { ROUTES, getActiveRouteId, setActiveRouteId, routeById, loadActiveRoute } from './routes/index.js';
+import { ROUTES, getActiveRouteId, setActiveRouteId, routeById, loadActiveRoute, loadRoute } from './routes/index.js';
 import { Profile } from './profile.js';
 import * as Forecast from './forecast.js';
 import * as Fire from './fire.js';
@@ -491,6 +491,131 @@ async function main() {
   Fire.fetchFireData()
     .then((data) => renderFire(data, active.meta.id))
     .catch((e) => { console.error('fire fetch failed', e); renderFire(null, active.meta.id); });
+
+  // -------------------------------------------------------- route compare
+  //
+  // Both routes ship in every build (see routes/index.js), but there was no
+  // way to actually see them side by side before choosing — the app just
+  // silently defaulted to ROUTES[0]. This popup is the pre-departure
+  // decision tool the plan called for ("picks one based on fire conditions
+  // before departure"): static stats plus the worst AQI and fire status
+  // for each, fetched live rather than guessed.
+
+  function eleBandFor(route, stride) {
+    let min = Infinity, max = -Infinity;
+    for (let i = 4; i < route.length; i += stride) {
+      if (route[i] < min) min = route[i];
+      if (route[i] > max) max = route[i];
+    }
+    return { min, max };
+  }
+
+  function fireLine(corridor, errored) {
+    if (errored) return 'no signal';
+    if (!corridor) return '—';
+    const n = (corridor.perimeters?.length || 0) + (corridor.hotspots?.length || 0);
+    return n === 0 ? 'Clear' : `${n} nearby`;
+  }
+
+  function compareColHtml(route, data) {
+    if (data.loading) {
+      return `<div class="compare-col" data-route="${route.id}">
+        <h3>${escapeHtml(route.name)}</h3>
+        <div class="compare-area">${escapeHtml(route.area)}</div>
+        <div class="compare-row"><span class="label">Loading…</span></div>
+      </div>`;
+    }
+    const aqiCls = AQI_LABEL(data.aqi);
+    const isActive = route.id === active.meta.id;
+    return `<div class="compare-col ${isActive ? 'is-active' : ''}" data-route="${route.id}">
+      ${isActive ? '<div class="compare-active-badge">Active</div>' : ''}
+      <h3>${escapeHtml(route.name)}</h3>
+      <div class="compare-area">${escapeHtml(route.area)}</div>
+      <div class="compare-row"><span class="label">Distance</span><span class="val">${data.miles.toFixed(1)} mi</span></div>
+      <div class="compare-row"><span class="label">Ascent</span><span class="val">${Geo.feetStr(data.ascent)}</span></div>
+      <div class="compare-row"><span class="label">Elevation</span><span class="val">${Geo.feetStr(data.eleBand.min)}–${Geo.feetStr(data.eleBand.max)}</span></div>
+      <div class="compare-row"><span class="label">Worst AQI (3d)</span><span class="val compare-aqi ${aqiCls}">${data.aqiError ? 'no signal' : (data.aqi != null ? Math.round(data.aqi) : '—')}</span></div>
+      <div class="compare-row"><span class="label">Fire</span><span class="val">${fireLine(data.fire, data.fireErrored)}</span></div>
+      <button class="compare-choose" data-route="${route.id}" type="button" ${isActive ? 'disabled' : ''}>${isActive ? 'Active' : 'Choose this'}</button>
+    </div>`;
+  }
+
+  function closeCompare() {
+    $('compare-backdrop').classList.remove('open');
+    $('compare-sheet').classList.remove('open');
+    $('compare-confirm').classList.remove('shown');
+  }
+
+  function doChooseRoute(routeId) {
+    setActiveRouteId(routeId);
+    location.reload();
+  }
+
+  // A trip is "underway" once today has a real dayStart (a fix taken after
+  // actually leaving camp, not just deciding at home) — see days.js. Only
+  // then does switching need a confirmation; before that, this popup IS
+  // the pre-departure decision, so switching should be silent.
+  function attemptChooseRoute(routeId) {
+    if (dayStart) {
+      const target = routeById(routeId);
+      const confirmEl = $('compare-confirm');
+      confirmEl.innerHTML = `You're on ${escapeHtml(active.meta.name)} today — switch to ${escapeHtml(target.name)}?
+        <div class="confirm-actions">
+          <button class="confirm-no" type="button">Cancel</button>
+          <button class="confirm-yes" type="button">Switch anyway</button>
+        </div>`;
+      confirmEl.classList.add('shown');
+      confirmEl.querySelector('.confirm-no').addEventListener('click', () => confirmEl.classList.remove('shown'));
+      confirmEl.querySelector('.confirm-yes').addEventListener('click', () => doChooseRoute(routeId));
+    } else {
+      doChooseRoute(routeId);
+    }
+  }
+
+  async function openRouteCompare() {
+    $('compare-backdrop').classList.add('open');
+    $('compare-sheet').classList.add('open');
+    $('compare-confirm').classList.remove('shown');
+    const cols = $('compare-cols');
+    cols.innerHTML = ROUTES.map((r) => compareColHtml(r, { loading: true })).join('');
+
+    const fireDataPromise = Fire.fetchFireData().catch(() => null);
+
+    const results = await Promise.all(ROUTES.map(async (r) => {
+      const { meta: _meta, ...mod } = await loadRoute(r.id);
+      const eleBand = eleBandFor(mod.ROUTE, mod.ROUTE_STRIDE);
+      let aqi = null, aqiError = false;
+      if (!navigator.onLine && r.id !== active.meta.id) {
+        aqiError = true;
+      } else if (r.id === active.meta.id) {
+        aqi = Forecast.worstAqiFromCache(r.id);
+      } else {
+        try { aqi = await Forecast.worstAqiForRoute(mod); }
+        catch { aqiError = true; }
+      }
+      return { route: r, mod, eleBand, aqi, aqiError };
+    }));
+
+    const fireData = await fireDataPromise;
+    cols.innerHTML = results.map((res) => compareColHtml(res.route, {
+      miles: res.mod.ROUTE_MILES,
+      ascent: res.mod.ROUTE_ASCENT_FT,
+      eleBand: res.eleBand,
+      aqi: res.aqi,
+      aqiError: res.aqiError,
+      fire: fireData?.corridors?.[res.route.id],
+      fireErrored: !fireData,
+    })).join('');
+  }
+
+  $('compare-trails-btn').addEventListener('click', openRouteCompare);
+  $('compare-close').addEventListener('click', closeCompare);
+  $('compare-backdrop').addEventListener('click', closeCompare);
+  $('compare-cols').addEventListener('click', (e) => {
+    const btn = e.target.closest('.compare-choose');
+    if (!btn || btn.disabled) return;
+    attemptChooseRoute(btn.dataset.route);
+  });
 
   // Map screen — dynamic import so nobody who never opens it pays for
   // parsing MapLibre. Re-fetched/rebuilt on every open() call rather than
