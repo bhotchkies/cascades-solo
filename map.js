@@ -391,9 +391,15 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
           // A flat text-size stays pinned at the same screen-pixel size at
           // every zoom (standard MapLibre/cartographic behavior) — but that
           // read as "the numbers never get bigger when you zoom in", so
-          // this scales up with zoom instead: bigger and easier to read
-          // without glasses once you're actually zoomed in on a spot.
-          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 20, 16, 32],
+          // this scales up with zoom instead. First cut spread the growth
+          // across zoom 9-16 (7 levels for a 20->32px change, ~1.7px per
+          // single pinch/click) — real, confirmed by directly jumping the
+          // map's zoom and comparing rendered size, but too subtle to
+          // notice one zoom step at a time. Steepened to a 3-stop curve
+          // that's calm while zoomed way out (whole-route view) but grows
+          // fast across zoom 13-17, the range actually used once you're
+          // looking at a specific spot on trail.
+          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 16, 13, 20, 17, 40],
           'text-anchor': 'left',
           'text-offset': [0.7, 0],
         },
@@ -408,7 +414,7 @@ export async function open(container, { routeId, route, geo, features, fix, onFe
         layout: {
           'text-field': ['get', 'mile'],
           'text-font': ['Noto Sans Regular'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 20, 17, 30],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 20, 17, 40],
           'text-anchor': 'left',
           'text-offset': [0.7, 0],
         },
