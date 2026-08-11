@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-11T20:53:49.863Z",
+ "generatedAt": "2026-08-11T21:55:28.245Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -7,15 +7,7 @@
    "errors": []
   },
   "snoqualmie": {
-   "perimeters": [
-    {
-     "name": "Three Queens",
-     "acres": 2923,
-     "discovered": "2026-07-16T04:28:00.000Z",
-     "cause": "Natural",
-     "nearestMi": 2.1
-    }
-   ],
+   "perimeters": [],
    "hotspots": [
     {
      "lat": 47.41921,
@@ -58,12 +50,36 @@
      "nearestMi": 2.9
     },
     {
+     "lat": 47.40876,
+     "lon": -121.26514,
+     "date": "2026-08-11",
+     "time": "2125",
+     "confidence": "n",
+     "nearestMi": 3.1
+    },
+    {
      "lat": 47.41595,
      "lon": -121.23502,
      "date": "2026-08-11",
      "time": "958",
      "confidence": "n",
      "nearestMi": 3.3
+    },
+    {
+     "lat": 47.4158,
+     "lon": -121.23511,
+     "date": "2026-08-11",
+     "time": "2125",
+     "confidence": "n",
+     "nearestMi": 3.3
+    },
+    {
+     "lat": 47.4164,
+     "lon": -121.2293,
+     "date": "2026-08-11",
+     "time": "2125",
+     "confidence": "n",
+     "nearestMi": 3.4
     },
     {
      "lat": 47.4123,
@@ -126,6 +142,14 @@
      "lon": -121.21955,
      "date": "2026-08-11",
      "time": "958",
+     "confidence": "n",
+     "nearestMi": 3.8
+    },
+    {
+     "lat": 47.41319,
+     "lon": -121.22311,
+     "date": "2026-08-11",
+     "time": "2125",
      "confidence": "n",
      "nearestMi": 3.8
     },
