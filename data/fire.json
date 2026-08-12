@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-12T10:12:44.969Z",
+ "generatedAt": "2026-08-12T11:52:22.893Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -74,6 +74,30 @@
      "nearestMi": 3.1
     },
     {
+     "lat": 47.41962,
+     "lon": -121.23378,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.1
+    },
+    {
+     "lat": 47.42105,
+     "lon": -121.23105,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.1
+    },
+    {
+     "lat": 47.41681,
+     "lon": -121.23762,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.2
+    },
+    {
      "lat": 47.41717,
      "lon": -121.2334,
      "date": "2026-08-12",
@@ -82,12 +106,84 @@
      "nearestMi": 3.3
     },
     {
+     "lat": 47.41842,
+     "lon": -121.22997,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.3
+    },
+    {
+     "lat": 47.41547,
+     "lon": -121.23328,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.4
+    },
+    {
+     "lat": 47.41732,
+     "lon": -121.22646,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.5
+    },
+    {
+     "lat": 47.41436,
+     "lon": -121.22967,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.6
+    },
+    {
+     "lat": 47.41626,
+     "lon": -121.2231,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.6
+    },
+    {
+     "lat": 47.41336,
+     "lon": -121.22643,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.7
+    },
+    {
      "lat": 47.4119,
      "lon": -121.22395,
      "date": "2026-08-12",
      "time": "940",
      "confidence": "n",
      "nearestMi": 3.8
+    },
+    {
+     "lat": 47.41236,
+     "lon": -121.22324,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.8
+    },
+    {
+     "lat": 47.41523,
+     "lon": -121.21981,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 3.8
+    },
+    {
+     "lat": 47.41129,
+     "lon": -121.21976,
+     "date": "2026-08-12",
+     "time": "1120",
+     "confidence": "n",
+     "nearestMi": 4
     }
    ],
    "errors": []
