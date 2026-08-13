@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-13T22:50:43.085Z",
+ "generatedAt": "2026-08-13T23:49:16.506Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -9,17 +9,10 @@
    ]
   },
   "snoqualmie": {
-   "perimeters": [
-    {
-     "name": "Three Queens",
-     "acres": 3534,
-     "discovered": "2026-07-16T04:28:00.000Z",
-     "cause": "Natural",
-     "nearestMi": 2.1
-    }
-   ],
+   "perimeters": [],
    "hotspots": [],
    "errors": [
+    "perimeters: https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Interagency_Perimeters_Current/FeatureServer/0/query?where=1%3D1&outFields=poly_IncidentName%2Cattr_IncidentName%2Cattr_FireDiscoveryDateTime%2Cpoly_GISAcres%2Cattr_FireCause&geometry=-121.47854%2C47.40104%2C-121.17423%2C47.57628&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outSR=4326&f=geojson -> HTTP 500",
     "hotspots: fetch failed"
    ]
   }
