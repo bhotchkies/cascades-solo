@@ -1,26 +1,51 @@
 {
- "generatedAt": "2026-08-14T22:29:24.072Z",
+ "generatedAt": "2026-08-14T23:26:38.256Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
    "hotspots": [],
    "errors": [
-    "hotspots: fetch failed"
+    "perimeters: https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Interagency_Perimeters_Current/FeatureServer/0/query?where=1%3D1&outFields=poly_IncidentName%2Cattr_IncidentName%2Cattr_FireDiscoveryDateTime%2Cpoly_GISAcres%2Cattr_FireCause&geometry=-121.55782%2C46.39272%2C-121.34242%2C46.6737&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outSR=4326&f=geojson -> HTTP 400"
    ]
   },
   "snoqualmie": {
-   "perimeters": [
+   "perimeters": [],
+   "hotspots": [
     {
-     "name": "Three Queens",
-     "acres": 3600,
-     "discovered": "2026-07-16T04:28:00.000Z",
-     "cause": "Natural",
-     "nearestMi": 2.1
+     "lat": 47.42435,
+     "lon": -121.22733,
+     "date": "2026-08-14",
+     "time": "1041",
+     "confidence": "n",
+     "nearestMi": 3
+    },
+    {
+     "lat": 47.42072,
+     "lon": -121.22901,
+     "date": "2026-08-14",
+     "time": "1041",
+     "confidence": "n",
+     "nearestMi": 3.2
+    },
+    {
+     "lat": 47.42315,
+     "lon": -121.22166,
+     "date": "2026-08-14",
+     "time": "1041",
+     "confidence": "n",
+     "nearestMi": 3.3
+    },
+    {
+     "lat": 47.41954,
+     "lon": -121.2235,
+     "date": "2026-08-14",
+     "time": "1041",
+     "confidence": "n",
+     "nearestMi": 3.4
     }
    ],
-   "hotspots": [],
    "errors": [
-    "hotspots: fetch failed"
+    "perimeters: https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Interagency_Perimeters_Current/FeatureServer/0/query?where=1%3D1&outFields=poly_IncidentName%2Cattr_IncidentName%2Cattr_FireDiscoveryDateTime%2Cpoly_GISAcres%2Cattr_FireCause&geometry=-121.47854%2C47.40104%2C-121.17423%2C47.57628&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outSR=4326&f=geojson -> HTTP 400"
    ]
   }
  }
