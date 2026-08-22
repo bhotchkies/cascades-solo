@@ -1,12 +1,10 @@
 {
- "generatedAt": "2026-08-21T23:29:10.077Z",
+ "generatedAt": "2026-08-22T01:35:47.769Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
    "hotspots": [],
-   "errors": [
-    "hotspots: fetch failed"
-   ]
+   "errors": []
   },
   "snoqualmie": {
    "perimeters": [
@@ -26,9 +24,7 @@
     }
    ],
    "hotspots": [],
-   "errors": [
-    "hotspots: fetch failed"
-   ]
+   "errors": []
   }
  }
 }
