@@ -1,12 +1,10 @@
 {
- "generatedAt": "2026-08-23T10:29:47.864Z",
+ "generatedAt": "2026-08-23T11:26:07.494Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
    "hotspots": [],
-   "errors": [
-    "hotspots: fetch failed"
-   ]
+   "errors": []
   },
   "snoqualmie": {
    "perimeters": [
@@ -25,10 +23,41 @@
      "nearestMi": 2.1
     }
    ],
-   "hotspots": [],
-   "errors": [
-    "hotspots: fetch failed"
-   ]
+   "hotspots": [
+    {
+     "lat": 47.4733,
+     "lon": -121.25793,
+     "date": "2026-08-23",
+     "time": "933",
+     "confidence": "n",
+     "nearestMi": 0
+    },
+    {
+     "lat": 47.47342,
+     "lon": -121.26241,
+     "date": "2026-08-23",
+     "time": "933",
+     "confidence": "n",
+     "nearestMi": 0.2
+    },
+    {
+     "lat": 47.46743,
+     "lon": -121.24098,
+     "date": "2026-08-23",
+     "time": "933",
+     "confidence": "n",
+     "nearestMi": 0.7
+    },
+    {
+     "lat": 47.46703,
+     "lon": -121.23814,
+     "date": "2026-08-23",
+     "time": "933",
+     "confidence": "n",
+     "nearestMi": 0.9
+    }
+   ],
+   "errors": []
   }
  }
 }
