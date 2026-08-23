@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T20:29:28.191Z",
+ "generatedAt": "2026-08-23T21:27:01.377Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -41,6 +41,14 @@
      "nearestMi": 0.2
     },
     {
+     "lat": 47.4685,
+     "lon": -121.24281,
+     "date": "2026-08-23",
+     "time": "2100",
+     "confidence": "n",
+     "nearestMi": 0.6
+    },
+    {
      "lat": 47.46743,
      "lon": -121.24098,
      "date": "2026-08-23",
@@ -49,12 +57,36 @@
      "nearestMi": 0.7
     },
     {
+     "lat": 47.46931,
+     "lon": -121.23779,
+     "date": "2026-08-23",
+     "time": "2100",
+     "confidence": "n",
+     "nearestMi": 0.8
+    },
+    {
      "lat": 47.46703,
      "lon": -121.23814,
      "date": "2026-08-23",
      "time": "934",
      "confidence": "n",
      "nearestMi": 0.9
+    },
+    {
+     "lat": 47.46604,
+     "lon": -121.23661,
+     "date": "2026-08-23",
+     "time": "2100",
+     "confidence": "n",
+     "nearestMi": 0.9
+    },
+    {
+     "lat": 47.46685,
+     "lon": -121.23161,
+     "date": "2026-08-23",
+     "time": "2100",
+     "confidence": "n",
+     "nearestMi": 1.2
     }
    ],
    "errors": []
