@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T07:38:09.546Z",
+ "generatedAt": "2026-08-23T08:36:50.650Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -22,7 +22,7 @@
      "acres": 6706,
      "discovered": "2026-07-16T04:28:00.000Z",
      "cause": "Natural",
-     "nearestMi": 2.2
+     "nearestMi": 2.1
     }
    ],
    "hotspots": [],
