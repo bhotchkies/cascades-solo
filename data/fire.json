@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T05:34:21.575Z",
+ "generatedAt": "2026-08-23T06:50:41.530Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -10,7 +10,7 @@
    "perimeters": [
     {
      "name": "King",
-     "acres": 459,
+     "acres": 588,
      "discovered": "2026-08-19T23:09:24.000Z",
      "cause": "Undetermined",
      "nearestMi": 0
