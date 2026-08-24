@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-24T08:55:05.660Z",
+ "generatedAt": "2026-08-24T09:54:27.417Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -23,7 +23,48 @@
      "nearestMi": 2
     }
    ],
-   "hotspots": [],
+   "hotspots": [
+    {
+     "lat": 47.45856,
+     "lon": -121.26632,
+     "date": "2026-08-24",
+     "time": "914",
+     "confidence": "n",
+     "nearestMi": 0.1
+    },
+    {
+     "lat": 47.46276,
+     "lon": -121.26692,
+     "date": "2026-08-24",
+     "time": "914",
+     "confidence": "n",
+     "nearestMi": 0.1
+    },
+    {
+     "lat": 47.46282,
+     "lon": -121.2715,
+     "date": "2026-08-24",
+     "time": "914",
+     "confidence": "n",
+     "nearestMi": 0.1
+    },
+    {
+     "lat": 47.46872,
+     "lon": -121.24819,
+     "date": "2026-08-24",
+     "time": "914",
+     "confidence": "n",
+     "nearestMi": 0.4
+    },
+    {
+     "lat": 47.46862,
+     "lon": -121.24042,
+     "date": "2026-08-24",
+     "time": "914",
+     "confidence": "n",
+     "nearestMi": 0.7
+    }
+   ],
    "errors": []
   }
  }
