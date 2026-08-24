@@ -1,16 +1,18 @@
 {
- "generatedAt": "2026-08-24T03:09:21.056Z",
+ "generatedAt": "2026-08-24T04:51:54.909Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
    "hotspots": [],
-   "errors": []
+   "errors": [
+    "hotspots: fetch failed"
+   ]
   },
   "snoqualmie": {
    "perimeters": [
     {
      "name": "King",
-     "acres": 588,
+     "acres": 714,
      "discovered": "2026-08-19T23:09:24.000Z",
      "cause": "Undetermined",
      "nearestMi": 0
@@ -24,7 +26,9 @@
     }
    ],
    "hotspots": [],
-   "errors": []
+   "errors": [
+    "hotspots: fetch failed"
+   ]
   }
  }
 }
