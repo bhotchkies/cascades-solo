@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-25T15:49:31.799Z",
+ "generatedAt": "2026-08-25T16:43:19.490Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -351,14 +351,6 @@
      "time": "1036",
      "confidence": "n",
      "nearestMi": 4.5
-    },
-    {
-     "lat": 47.41653,
-     "lon": -121.19261,
-     "date": "2026-08-25",
-     "time": "1036",
-     "confidence": "n",
-     "nearestMi": 4.6
     },
     {
      "lat": 47.41872,
