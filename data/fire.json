@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-31T01:17:28.447Z",
+ "generatedAt": "2026-08-31T08:29:38.130Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -17,7 +17,7 @@
     },
     {
      "name": "Three Queens",
-     "acres": 8743,
+     "acres": 8770,
      "discovered": "2026-07-16T04:28:00.000Z",
      "cause": "Natural",
      "nearestMi": 1.7
