@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-01T07:36:31.264Z",
+ "generatedAt": "2026-09-01T13:22:22.784Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -10,20 +10,157 @@
    "perimeters": [
     {
      "name": "King",
-     "acres": 2508,
+     "acres": 2653,
      "discovered": "2026-08-19T23:09:24.000Z",
      "cause": "Undetermined",
      "nearestMi": 0
     },
     {
      "name": "Three Queens",
-     "acres": 8993,
+     "acres": 9012,
      "discovered": "2026-07-16T04:28:00.000Z",
      "cause": "Natural",
      "nearestMi": 1.7
     }
    ],
-   "hotspots": [],
+   "hotspots": [
+    {
+     "lat": 47.45936,
+     "lon": -121.2515,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 0.7
+    },
+    {
+     "lat": 47.48843,
+     "lon": -121.2245,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 0.8
+    },
+    {
+     "lat": 47.48159,
+     "lon": -121.22746,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1
+    },
+    {
+     "lat": 47.48429,
+     "lon": -121.22026,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1
+    },
+    {
+     "lat": 47.485,
+     "lon": -121.22591,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1
+    },
+    {
+     "lat": 47.47816,
+     "lon": -121.22887,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.1
+    },
+    {
+     "lat": 47.47469,
+     "lon": -121.22997,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.2
+    },
+    {
+     "lat": 47.45435,
+     "lon": -121.2401,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.3
+    },
+    {
+     "lat": 47.47744,
+     "lon": -121.22314,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.3
+    },
+    {
+     "lat": 47.48087,
+     "lon": -121.22172,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.3
+    },
+    {
+     "lat": 47.45716,
+     "lon": -121.23383,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.4
+    },
+    {
+     "lat": 47.47399,
+     "lon": -121.22434,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.4
+    },
+    {
+     "lat": 47.47669,
+     "lon": -121.21712,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.5
+    },
+    {
+     "lat": 47.45649,
+     "lon": -121.22842,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.6
+    },
+    {
+     "lat": 47.45297,
+     "lon": -121.22908,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.7
+    },
+    {
+     "lat": 47.42228,
+     "lon": -121.1851,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 4.6
+    },
+    {
+     "lat": 47.42159,
+     "lon": -121.17953,
+     "date": "2026-09-01",
+     "time": "1006",
+     "confidence": "n",
+     "nearestMi": 4.8
+    }
+   ],
    "errors": []
   }
  }
