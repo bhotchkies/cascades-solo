@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-01T20:53:17.701Z",
+ "generatedAt": "2026-09-01T23:12:08.552Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -25,6 +25,30 @@
    ],
    "hotspots": [
     {
+     "lat": 47.46194,
+     "lon": -121.27368,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 0.2
+    },
+    {
+     "lat": 47.49062,
+     "lon": -121.22796,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 0.6
+    },
+    {
+     "lat": 47.4911,
+     "lon": -121.22266,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 0.6
+    },
+    {
      "lat": 47.45936,
      "lon": -121.2515,
      "date": "2026-09-01",
@@ -39,6 +63,38 @@
      "time": "1006",
      "confidence": "n",
      "nearestMi": 0.8
+    },
+    {
+     "lat": 47.4862,
+     "lon": -121.23157,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 0.8
+    },
+    {
+     "lat": 47.48715,
+     "lon": -121.22105,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 0.8
+    },
+    {
+     "lat": 47.48233,
+     "lon": -121.22915,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 0.9
+    },
+    {
+     "lat": 47.48668,
+     "lon": -121.22628,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 0.9
     },
     {
      "lat": 47.48159,
@@ -69,6 +125,38 @@
      "lon": -121.22887,
      "date": "2026-09-01",
      "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.1
+    },
+    {
+     "lat": 47.46128,
+     "lon": -121.2355,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 1.1
+    },
+    {
+     "lat": 47.4784,
+     "lon": -121.22724,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 1.1
+    },
+    {
+     "lat": 47.48278,
+     "lon": -121.22417,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 1.1
+    },
+    {
+     "lat": 47.48321,
+     "lon": -121.21937,
+     "date": "2026-09-01",
+     "time": "2132",
      "confidence": "n",
      "nearestMi": 1.1
     },
@@ -105,6 +193,22 @@
      "nearestMi": 1.3
     },
     {
+     "lat": 47.46178,
+     "lon": -121.22996,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 1.3
+    },
+    {
+     "lat": 47.47884,
+     "lon": -121.2224,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 1.3
+    },
+    {
      "lat": 47.45716,
      "lon": -121.23383,
      "date": "2026-09-01",
@@ -121,10 +225,26 @@
      "nearestMi": 1.4
     },
     {
+     "lat": 47.47925,
+     "lon": -121.21788,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 1.4
+    },
+    {
      "lat": 47.47669,
      "lon": -121.21712,
      "date": "2026-09-01",
      "time": "1006",
+     "confidence": "n",
+     "nearestMi": 1.5
+    },
+    {
+     "lat": 47.45773,
+     "lon": -121.22939,
+     "date": "2026-09-01",
+     "time": "2132",
      "confidence": "n",
      "nearestMi": 1.5
     },
@@ -145,10 +265,42 @@
      "nearestMi": 1.7
     },
     {
+     "lat": 47.44489,
+     "lon": -121.23571,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 1.8
+    },
+    {
+     "lat": 47.44546,
+     "lon": -121.22937,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 2
+    },
+    {
+     "lat": 47.40568,
+     "lon": -121.21276,
+     "date": "2026-09-01",
+     "time": "2132",
+     "confidence": "n",
+     "nearestMi": 4.5
+    },
+    {
      "lat": 47.42228,
      "lon": -121.1851,
      "date": "2026-09-01",
      "time": "1006",
+     "confidence": "n",
+     "nearestMi": 4.6
+    },
+    {
+     "lat": 47.4061,
+     "lon": -121.20825,
+     "date": "2026-09-01",
+     "time": "2132",
      "confidence": "n",
      "nearestMi": 4.6
     },
