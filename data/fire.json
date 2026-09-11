@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-11T09:27:15.246Z",
+ "generatedAt": "2026-09-11T14:11:08.295Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -10,20 +10,61 @@
    "perimeters": [
     {
      "name": "King",
-     "acres": 3217,
+     "acres": 3278,
      "discovered": "2026-08-19T23:09:24.000Z",
      "cause": "Undetermined",
      "nearestMi": 0
     },
     {
      "name": "Three Queens",
-     "acres": 9518,
+     "acres": 9527,
      "discovered": "2026-07-16T04:28:00.000Z",
      "cause": "Natural",
      "nearestMi": 1.5
     }
    ],
-   "hotspots": [],
+   "hotspots": [
+    {
+     "lat": 47.4967,
+     "lon": -121.22311,
+     "date": "2026-09-11",
+     "time": "1017",
+     "confidence": "n",
+     "nearestMi": 0.2
+    },
+    {
+     "lat": 47.49343,
+     "lon": -121.22424,
+     "date": "2026-09-11",
+     "time": "1017",
+     "confidence": "n",
+     "nearestMi": 0.4
+    },
+    {
+     "lat": 47.48387,
+     "lon": -121.22481,
+     "date": "2026-09-11",
+     "time": "1017",
+     "confidence": "n",
+     "nearestMi": 1.1
+    },
+    {
+     "lat": 47.47332,
+     "lon": -121.22322,
+     "date": "2026-09-11",
+     "time": "1017",
+     "confidence": "n",
+     "nearestMi": 1.5
+    },
+    {
+     "lat": 47.42484,
+     "lon": -121.26575,
+     "date": "2026-09-11",
+     "time": "1017",
+     "confidence": "n",
+     "nearestMi": 2.1
+    }
+   ],
    "errors": []
   }
  }
