@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-09T09:31:04.501Z",
+ "generatedAt": "2026-11-09T20:34:43.751Z",
  "corridors": {
   "goat-rocks": {
    "perimeters": [],
@@ -24,7 +24,9 @@
     }
    ],
    "hotspots": [],
-   "errors": []
+   "errors": [
+    "hotspots: fetch failed"
+   ]
   }
  }
 }
